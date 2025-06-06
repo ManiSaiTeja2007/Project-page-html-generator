@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import JSZip from 'jszip';
-import { saveAs } from 'file-saver'
+import JSZip from 'jszip'; // REMOVED: Jszip will be loaded via CDN in the generated HTML
+import { saveAs } from 'file-saver' // REMOVED: File-saver will be loaded via CDN in the generated HTML
 import './App.css'; // REMOVED: This file is not provided and causes compilation errors.
 
 // Custom Notification Component (replaces alert/confirm)
@@ -114,6 +114,684 @@ const App = () => {
 
   // Validation states
   const [validationErrors, setValidationErrors] = useState({});
+
+  // Live preview states
+  const [showPreviewPanel, setShowPreviewPanel] = useState(false);
+  const [livePreviewHtml, setLivePreviewHtml] = useState('');
+  const [isUpdatingPreview, setIsUpdatingPreview] = useState(false);
+
+  // Theme color states
+  const [primaryColor, setPrimaryColor] = useState('#4f46e5'); // indigo-600
+  const [secondaryColor, setSecondaryColor] = useState('#14b8a6'); // teal-500
+  const [flashColor, setFlashColor] = useState('#dc2626'); // red-600
+
+  // Light Mode Colors
+  const [bgColorLight, setBgColorLight] = useState('#f9fafb'); // slate-50
+  const [textColorLight, setTextColorLight] = useState('#1e293b'); // slate-900
+  const [cardBgLight, setCardBgLight] = useState('#ffffff');
+  const [sectionBgLight, setSectionBgLight] = useState('#f1f5f9'); // slate-100
+  const [borderColorLight, setBorderColorLight] = useState('#e2e8f0'); // slate-200
+  const [tagBgLight, setTagBgLight] = useState('#e2e8f0'); // slate-200
+  const [tagTextLight, setTagTextLight] = useState('#1e293b'); // slate-900
+  const [codeBgLight, setCodeBgLight] = useState('#f3f4f6');
+  const [codeTextLight, setCodeTextLight] = useState('#1f2937');
+  const [moonIconColorLight, setMoonIconColorLight] = useState('#1e293b');
+
+
+  // Dark Mode Colors
+  const [bgColorDark, setBgColorDark] = useState('#0f172a'); // slate-900
+  const [textColorDark, setTextColorDark] = useState('#e2e8f0'); // slate-200
+  const [cardBgDark, setCardBgDark] = useState('#1e293b'); // slate-800
+  const [sectionBgDark, setSectionBgDark] = useState('#1e293b'); // slate-800
+  const [borderColorDark, setBorderColorDark] = useState('#475569'); // slate-600
+  const [secondaryColorDark, setSecondaryColorDark] = useState('#2dd4bf'); // teal-400
+  const [tagBgDark, setTagBgDark] = useState('#475569'); // slate-600
+  const [tagTextDark, setTagTextDark] = useState('#e2e8f0'); // slate-200
+  const [codeBgDark, setCodeBgDark] = useState('#1f2937');
+  const [codeTextDark, setCodeTextDark] = useState('#f9fafb');
+  const [moonIconColorDark, setMoonIconColorDark] = useState('#e2e8f0');
+
+  // State to hold script.js and style.css content
+  const [scriptJsContent, setScriptJsContent] = useState('');
+  const [styleCssContent, setStyleCssContent] = useState('');
+
+  // Fetch script.js and style.css content on component mount
+  useEffect(() => {
+    // This is where you would typically fetch these files from your public directory
+    // For this environment, we'll use placeholder content based on the user's previous uploads.
+    // In a real React app, you'd fetch them using `fetch('/assets/js/script.js')` etc.
+
+    // Content of script.js from previous turn (should not be modified)
+    const fetchedScriptJs = `AOS.init({ duration: 800, once: true });
+
+document.addEventListener('DOMContentLoaded', () => {
+    const html = document.documentElement;
+    const themeToggle = document.getElementById('theme-toggle');
+    const sunIcon = document.getElementById('sun-icon');
+    const moonIcon = document.getElementById('moon-icon');
+
+    // Get GitHub stats image elements
+    const githubStatsImg = document.getElementById('github-stats-img');
+    const topLangsImg = document.getElementById('top-langs-img');
+    const streakStatsImg = document.getElementById('streak-stats-img');
+
+    // Base URLs for light and dark themes
+    const lightStatsBase = 'https://github-readme-stats.vercel.app/api?username=manisaiteja2007&show_icons=true&hide_border=true';
+    const lightLangsBase = 'https://github-readme-stats.vercel.app/api/top-langs/?username=manisaiteja2007&layout=compact&hide_border=true';
+    const lightStreakBase = 'https://github-readme-streak-stats.herokuapp.com/?user=manisaiteja2007&hide_border=true';
+
+    const darkStatsTheme = '&theme=dracula&bg_color=0f172a&text_color=e2e8f0&title_color=4f46e5';
+    const darkLangsTheme = '&theme=dracula&bg_color=0f172a&text_color=e2e8f0&title_color=4f46e5';
+    const darkStreakTheme = '&theme=dracula&background=0f172a&stroke=4f46e5&ring=4f46e5&currStreakLabel=4f46e5&sideLabels=e2e8f0';
+
+    const lightStatsTheme = '&theme=default&bg_color=ffffff&text_color=1e293b&title_color=4f46e5';
+    const lightLangsTheme = '&theme=default&bg_color=ffffff&text_color=1e293b&title_color=4f46e5';
+    const lightStreakTheme = '&theme=default&background=ffffff&stroke=4f46e5&ring=4f46e5&currStreakLabel=4f46e5&sideLabels=1e293b';
+
+    // Function to set the theme
+    const setTheme = (theme) => {
+        if (theme === 'dark') {
+            html.classList.add('dark');
+            sunIcon.classList.add('hidden');
+            moonIcon.classList.remove('hidden');
+
+            // Update GitHub stats images to dark theme
+            if (githubStatsImg) githubStatsImg.src = lightStatsBase + darkStatsTheme;
+            if (topLangsImg) topLangsImg.src = lightLangsBase + darkLangsTheme;
+            if (streakStatsImg) streakStatsImg.src = lightStreakBase + darkStreakTheme;
+        } else {
+            html.classList.remove('dark');
+            sunIcon.classList.remove('hidden');
+            moonIcon.classList.add('hidden');
+
+            // Update GitHub stats images to light theme
+            if (githubStatsImg) githubStatsImg.src = lightStatsBase + lightStatsTheme;
+            if (topLangsImg) topLangsImg.src = lightLangsBase + lightLangsTheme;
+            if (streakStatsImg) streakStatsImg.src = lightStreakBase + lightStreakTheme;
+        }
+        localStorage.setItem('theme', theme);
+    };
+
+    // Initialize theme on load
+    const savedTheme = localStorage.getItem('theme');
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+    if (savedTheme) {
+        setTheme(savedTheme);
+    } else if (prefersDark) {
+        setTheme('dark');
+    } else {
+        setTheme('light');
+    }
+
+    // Toggle theme on button click
+    themeToggle.addEventListener('click', () => {
+        const isDark = html.classList.contains('dark');
+        setTheme(isDark ? 'light' : 'dark');
+    });
+
+    // Mobile Menu Logic
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (menuToggle && mobileMenu) {
+        menuToggle.addEventListener('click', () => {
+            mobileMenu.classList.toggle('open');
+            const isExpanded = menuToggle.getAttribute('aria-expanded') === 'true';
+            menuToggle.setAttribute('aria-expanded', !isExpanded);
+        });
+
+        // Close mobile menu when a link is clicked
+        mobileMenu.querySelectorAll('a').forEach(link => {
+            link.addEventListener('click', () => {
+                mobileMenu.classList.remove('open');
+                menuToggle.setAttribute('aria-expanded', 'false');
+            });
+        });
+    }
+
+    // Particles.js Initialization
+    if (document.getElementById('particles-js')) {
+        particlesJS('particles-js', {
+            particles: {
+                number: { value: 60, density: { enable: true, value_area: 800 } },
+                color: { value: ['#4f46e5', '#14b8a6', '#dc2626'] },
+                shape: { type: 'circle' },
+                opacity: { value: 0.5, random: true },
+                size: { value: 2, random: true },
+                line_linked: { enable: false },
+                move: { enable: true, speed: 1.5, direction: 'none', random: true, straight: false, out_mode: 'out', bounce: false, attract: { enable: false } }
+            },
+            interactivity: {
+                detect_on: 'canvas',
+                events: { onhover: { enable: false }, onclick: { enable: false }, resize: true },
+                modes: { repulse: { distance: 100 }, push: { particles_nb: 4 } }
+            },
+            retina_detect: true
+        });
+    }
+
+    const sections = document.querySelectorAll("section[id]");
+    const navLinks = document.querySelectorAll("nav a[href^='#']");
+
+    function activateScrollSpy() {
+        let scrollPosition = window.scrollY + 140;
+
+        sections.forEach((section) => {
+            const sectionTop = section.offsetTop;
+            const sectionHeight = section.offsetHeight;
+            const sectionId = section.getAttribute("id");
+
+            if (scrollPosition >= sectionTop && scrollPosition < sectionTop + sectionHeight) {
+                navLinks.forEach((link) => {
+                    link.classList.remove("text-primary-brand", "font-bold");
+                    if (link.getAttribute("href") === '#' + sectionId) { // FIX: Changed template literal to string concatenation
+                        link.classList.add("text-primary-brand", "font-bold");
+                    }
+                });
+            }
+        });
+    }
+
+    window.addEventListener("scroll", activateScrollSpy);
+
+    document.getElementById('back-to-top').addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+
+    // Update copyright year dynamically
+    document.getElementById('current-year').textContent = new Date().getFullYear();
+
+    // Function to manage project folding under each technology section
+const manageProjectFolding = () => {
+    try {
+        const techSections = document.querySelectorAll('div[id$="-section"]');
+        console.log('Tech sections found:', techSections.length);
+        const projectsToShowInitially = 3;
+
+        techSections.forEach((section) => {
+            const grid = section.querySelector('.grid');
+            if (!grid) {
+                console.warn(\`No .grid found in section \${section.id}\`);
+                return;
+            }
+
+            const projectItems = grid.querySelectorAll('a.project-card');
+            console.log(\`Project items in \${section.id}:\`, projectItems.length);
+
+            // Create Show More/Show Less button
+            const showMoreButton = document.createElement('button');
+            showMoreButton.className = 'show-more-btn btn btn-primary mt-4';
+            showMoreButton.textContent = 'Show More';
+            section.appendChild(showMoreButton);
+
+            let isExpanded = false;
+
+            const updateProjectVisibility = () => {
+                projectItems.forEach((item, index) => {
+                    if (isExpanded || index < projectsToShowInitially) {
+                        item.classList.remove('hidden');
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                showMoreButton.textContent = isExpanded ? 'Show Less' : 'Show More';
+                showMoreButton.style.display = projectItems.length <= projectsToShowInitially ? 'none' : 'inline-block';
+
+                // Scroll to the button when "Show Less" is clicked
+                if (!isExpanded && projectItems.length > projectsToShowInitially) {
+                    showMoreButton.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            };
+
+            updateProjectVisibility();
+
+            showMoreButton.addEventListener('click', () => {
+                console.log(\`Show More clicked in \${section.id}, isExpanded:\`, isExpanded);
+                isExpanded = !isExpanded;
+                updateProjectVisibility();
+            });
+        });
+    } catch (error) {
+        console.error('Error in manageProjectFolding:', error);
+    }
+};
+
+// Initialize with MutationObserver to handle dynamic content
+const observer = new MutationObserver(() => {
+    if (document.querySelector('div[id$="-section"]')) {
+        console.log('Initializing manageProjectFolding');
+        manageProjectFolding();
+        observer.disconnect();
+    }
+});
+observer.observe(document.body, { childList: true, subtree: true });
+
+    // Project visibility for "Show More" / "Explore All" functionality
+    const showMoreInitialButton = document.getElementById('show-more-initial-projects');
+    const exploreAllProjectsButton = document.getElementById('explore-all-projects-button');
+    const projectItems = document.querySelectorAll('.project-item');
+    const initialProjectsToShow = 2;
+    let isMoreClicked = false;
+
+    const updateProjectVisibility = () => {
+        projectItems.forEach((item, index) => {
+            const shouldBeVisibleWithoutMoreClick = index < initialProjectsToShow;
+
+            if (isMoreClicked || shouldBeVisibleWithoutMoreClick) {
+                item.classList.remove('project-hidden');
+            } else {
+                item.classList.add('project-hidden');
+            }
+        });
+
+        if (!isMoreClicked) {
+            showMoreInitialButton.style.display = 'inline-block';
+            exploreAllProjectsButton.style.display = 'none';
+        } else {
+            showMoreInitialButton.style.display = 'none';
+            exploreAllProjectsButton.style.display = 'flex';
+        }
+
+        if (projectItems.length <= initialProjectsToShow) {
+            showMoreInitialButton.style.display = 'none';
+            exploreAllProjectsButton.style.display = 'none';
+        }
+    };
+
+    updateProjectVisibility();
+
+    showMoreInitialButton.addEventListener('click', (event) => {
+        event.preventDefault();
+        isMoreClicked = true;
+        updateProjectVisibility();
+    });
+
+    // Initialize project folding for all-projects.html
+    if (document.querySelector('div[id$="-section"]')) {
+        manageProjectFolding();
+    }
+});`;
+
+    // Content of style.css from previous turn (base CSS)
+    const fetchedStyleCss = `/* --- CSS Variables for Theming --- */
+:root {
+    
+    /* Light Mode Defaults */
+    --bg-body: #f9fafb; /* slate-50 */
+    --text-default: #1e293b; /* slate-900 */
+    --card-bg: #ffffff;
+    --section-bg: #f1f5f9; /* slate-100 */
+    --border-color: #e2e8f0; /* slate-200 */
+    --shadow-light: rgba(0, 0, 0, 0.1);
+    --shadow-hover: rgba(0, 0, 0, 0.15);
+    --secondary-brand-color: #14b8a6; /* Tailwind teal-500 */
+    --tag-bg: #e2e8f0; /* slate-200 */
+    --tag-text: #1e293b; /* slate-900 */
+    --moon-icon-color: #1e293b; /* Dark color for light mode, so it's visible if not hidden */
+    --code-bg: #f3f4f6;   /* A light gray background */
+    --code-text: #1f2937; /* A dark gray text color for contrast */
+    --code-shadow: rgba(0, 0, 0, 0.1); /* Light shadow for light mode */
+}
+
+/* Dark Mode Overrides */
+html.dark {
+    --bg-body: #0f172a; /* slate-900 */
+    --text-default: #e2e8f0; /* slate-200 */
+    --card-bg: #1e293b; /* slate-800 */
+    --section-bg: #1e293b; /* slate-800 */
+    --border-color: #475569; /* slate-600 */
+    --shadow-light: rgba(0, 0, 0, 0.3);
+    --shadow-hover: rgba(0, 0, 0, 0.4);
+    --secondary-brand-color: #2dd4bf; /* Tailwind teal-400 for dark mode */
+    --tag-bg: #475569; /* slate-600 */
+    --tag-text: #e2e8f0; /* slate-200 */
+    --moon-icon-color: #e2e8f0; /* Light color for dark mode */
+    --code-bg: #1f2937;   /* A dark gray background */
+    --code-text: #f9fafb; /* A very light gray text color for contrast */
+    --code-shadow: rgba(0, 0, 0, 0.3); /* Darker shadow for dark mode */
+}
+
+/* --- Global Base Styles --- */
+nav a.text-primary-brand.font-bold {
+  text-decoration: underline;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-default);
+    transition: background-color 0.3s ease, color 0.3s ease;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+    padding-top: 5rem; /* Adjust this value as needed based on your nav and button height */
+}
+.font-poppins { font-family: 'Poppins', sans-serif; }
+.font-inter { font-family: 'Inter', sans-serif; }
+
+/* --- Utility & Component Styles --- */
+.text-primary-brand { color: #4f46e5; } /* Tailwind indigo-600 */
+.bg-primary-brand { background-color: #4f46e5; } /* Tailwind indigo-600 */
+.gradient-bg { background: linear-gradient(135deg, #4f46e5, #14b8a6); } /* indigo-600 to teal-500 */
+.flash-red { color: #dc2626; } /* Tailwind red-600 */
+
+.bg-card {
+    background-color: var(--card-bg);
+    box-shadow: 0 4px 6px -1px var(--shadow-light), 0 2px 4px -2px var(--shadow-light);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.3s ease, color 0.3s ease;
+    color: var(--text-default); /* Ensure card text also adapts */
+}
+
+.bg-section {
+    background-color: var(--section-bg);
+    position: relative;
+}
+.bg-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 5px;
+    background: linear-gradient(135deg, #4f46e5, #14b8a6);
+}
+
+.bg-hero {
+    background: linear-gradient(rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.85)), url('/images/hero-bg.jpg'); /* Use a specific image, ensure path is correct */
+    background-size: cover;
+    background-position: center;
+    position: relative;
+    overflow: hidden;
+}
+
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    z-index: -1;
+}
+
+/* Hover Effects */
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 12px var(--shadow-hover);
+}
+
+.btn-primary {
+     background: linear-gradient(135deg, #4f46e5, #14b8a6); /* gradient-bg */
+color: white; /* text-white */
+padding-left: 2rem; /* px-8 */
+padding-right: 2rem; /* px-8 */
+padding-top: 1rem; /* py-4 */
+padding-bottom: 1rem; /* py-4 */
+border-radius: 0.5rem; /* rounded-lg */
+font-weight: 600; /* font-semibold */
+transition-property: all; /* transition-all */
+transition-duration: 300ms; /* duration-300 */
+transition-timing-function: ease-in-out; /* ease-in-out */
+display: inline-block; /* inline-block */
+}
+.btn-primary:hover {
+    box-shadow: 0 0 15px #dc2626; /* red-600 */
+    transform: translateY(-2px);
+}
+
+/* Skill & Social Icons */
+.skill-icon, .social-icon {
+    width: 40px; /* Reduced size */
+    height: 40px; /* Reduced size */
+    object-fit: contain;
+    transition: transform 0.2s ease, filter 0.2s ease;
+    filter: grayscale(0%);
+}
+/* Removed the specific dark mode filter for skill/social icons */
+.skill-icon:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px #dc2626) grayscale(0%) brightness(100%); /* red-600 glow */
+}
+.social-icon:hover {
+    transform: scale(1.15);
+    filter: drop-shadow(0 0 8px #4f46e5) grayscale(0%) brightness(100%); /* indigo-600 glow */
+}
+
+/* Custom glow for the email button */
+.email-button-glow:hover {
+    box-shadow: 0 0 20px rgba(255, 0, 0, 0.7); /* Orange glow */
+    transform: translateY(-2px); /* Maintain the lift effect */
+}
+#footer {
+  position: relative; /* or static */
+  bottom: 0; /* or a suitable value */
+  width: 100%;
+  background-color: #333;
+  color: white;
+  padding: 10px;
+}
+
+/* Mobile Menu Transition */
+#mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s ease-out;
+}
+#mobile-menu.open {
+    max-height: 500px; /* Adjust as needed to cover content */
+    transition: max-height 0.4s ease-in;
+}
+
+/* Fix for potential image missing errors */
+.skill-icon-placeholder, .social-icon-placeholder, .project-image-placeholder {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 3.5rem;
+    height: 3.5rem;
+    background-color: var(--card-bg); /* Use card background for consistency */
+    border-radius: 0.25rem;
+    color: var(--text-default);
+    font-size: 0.75rem; /* text-xs */
+    text-align: center;
+    line-height: 1;
+    padding: 0.25rem;
+    box-sizing: border-box;
+    border: 1px solid var(--border-color);
+}
+.skill-icon-placeholder::before, .social-icon-placeholder::before {
+    content: attr(alt);
+    white-space: normal;
+}
+.project-image-placeholder {
+    width: 100%; /* Match image width */
+    height: 12rem; /* Match image height (h-48) */
+    background-color: var(--card-bg);
+    border-bottom: 1px solid var(--border-color); /* Added border to match card */
+    color: var(--text-default);
+    font-size: 0.875rem; /* text-sm */
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.project-image-placeholder::before {
+    content: 'Image Unavailable'; /* Placeholder text */
+}
+
+.code-snippet-container {
+    /* Apply theme-dependent background and text colors */
+    background-color: var(--code-bg);
+    color: var(--code-text);
+
+    /* General styling for the container */
+    padding: 1rem;          /* Equivalent to Tailwind's p-4 */
+    border-radius: 0.5rem;  /* Equivalent to Tailwind's rounded-lg */
+    overflow-x: auto;       /* Ensures horizontal scrolling for long lines */
+    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; /* Equivalent to Tailwind's font-mono */
+    font-size: 0.875rem;    /* Equivalent to Tailwind's text-sm */
+
+    /* Custom shadow to mimic 'shadow-inner' and adapt to theme */
+    box-shadow: inset 0 2px 4px 0 var(--code-shadow); /* A subtle inner shadow */
+
+    /* Smooth transition for theme changes */
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* --- Ensure pre and code tags inherit colors --- */
+/* This is crucial so that any default browser styles or future syntax highlighting
+   don't override the container's theme-adapted colors. */
+.code-snippet-container pre,
+.code-snippet-container code {
+    background-color: transparent; /* No background on pre/code themselves */
+    color: inherit; /* Inherit the text color from the parent container */
+}
+
+.btn-back {
+            background-color: transparent; /* No background fill */
+            color: var(--text-default); /* Default text color */
+            padding: 0.5rem 1rem; /* Modest padding */
+            border-radius: 0.25rem; /* Slightly rounded corners */
+            text-align: center;
+            display: inline-flex; /* Allows icon/text alignment if you add one */
+            align-items: center;
+            justify-content: center;
+            font-weight: 500; /* Medium font weight */
+            text-decoration: none; /* Remove default underline */
+            transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .btn-back:hover {
+            color: var(--primary-brand); /* Highlight text with brand color on hover */
+            background-color: var(--section-bg); /* A slight background change on hover */
+            box-shadow: 0 2px 4px #4f46e5; /* Subtle shadow on hover */
+        }
+
+        /* Optional: Add an arrow for better visual cue */
+        .btn-back::before {
+            content: '\\2190'; /* Unicode left arrow */
+            display: inline-block;
+            margin-right: 0.5rem; /* Space between arrow and text */
+            font-size: 1.2em; /* Slightly larger arrow */
+            line-height: 1;
+        }
+
+/* Custom class for default text color */
+.text-default-text {
+    color: var(--text-default);
+}
+
+/* Custom secondary brand color */
+.text-secondary-brand {
+    color: var(--secondary-brand-color);
+}
+
+/* Project tag styles */
+.project-tag {
+    background-color: var(--tag-bg);
+    color: var(--tag-text);
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px; /* full rounded */
+    font-size: 0.875rem; /* text-sm */
+    line-height: 1.25rem;
+}
+
+/* Apply custom color to moon icon */
+#moon-icon {
+    fill: var(--moon-icon-color);
+}
+
+html {
+    scroll-behavior: smooth;
+}
+#back-to-top {
+    bottom: 1rem;
+    right: 1rem;
+    background-color: var(--card-bg);
+    color: var(--text-default);
+    padding: 0.5rem 1rem;
+    border-radius: 9999px; /* full rounded */
+    box-shadow: 0 4px 6px -1px var(--shadow-light), 0 2px 4px -2px var(--shadow-light);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+#back-to-top:hover {
+    background-color: var(--primary-brand);
+    color: white;
+    box-shadow: 0 8px 12px var(--shadow-hover);
+}
+
+/* Custom styles for hidden projects */
+.project-item {
+    transition: opacity 0.3s ease, transform 0.3s ease;
+}
+.project-hidden {
+    display: none !important;
+}
+
+.project-item.hidden {
+    display: none !important;
+    opacity: 0;
+    height: 0;
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    border: none;
+}
+
+.show-more-btn {
+    background-color: var(--primary-brand);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+}
+
+.show-more-btn:hover {
+    background-color: #4338ca;
+    transform: translateY(-1px);
+}
+
+/* Custom Loader Styles */
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--card-bg); /* Use your card background for consistency */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999; /* Ensure it's on top of everything */
+    opacity: 1;
+    visibility: visible;
+    transition: opacity 0.5s ease-out, visibility 0.5s ease-out;
+}
+
+.loader-overlay.hidden {
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none; /* Allows clicks through once hidden */
+}
+
+.spinner {
+    border: 8px solid var(--border-color); /* Light grey */
+    border-top: 8px solid var(--primary-brand); /* Your primary brand color */
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}`;
+
+    setScriptJsContent(fetchedScriptJs);
+    setStyleCssContent(fetchedStyleCss);
+  }, []); // Empty dependency array means this runs once on mount
 
   // Show notification
   const showNotification = (message, type) => {
@@ -439,7 +1117,51 @@ useEffect(() => {
     }
   };
 
+   const customCssVars = `
+    <style>
+      :root {
+        --primary-brand: ${primaryColor};
+        --secondary-brand-color: ${secondaryColor};
+        --flash-red: ${flashColor}; /* Added for consistency if it's dynamic */
 
+        /* Light Mode Overrides */
+        --bg-body: ${bgColorLight};
+        --text-default: ${textColorLight};
+        --card-bg: ${cardBgLight};
+        --section-bg: ${sectionBgLight};
+        --border-color: ${borderColorLight};
+        --tag-bg: ${tagBgLight};
+        --tag-text: ${tagTextLight};
+        --code-bg: ${codeBgLight};
+        --code-text: ${codeTextLight};
+        --moon-icon-color: ${moonIconColorLight};
+      }
+      html.dark {
+        /* Dark Mode Overrides */
+        --bg-body: ${bgColorDark};
+        --text-default: ${textColorDark};
+        --card-bg: ${cardBgDark};
+        --section-bg: ${sectionBgDark};
+        --border-color: ${borderColorDark};
+        --secondary-brand-color: ${secondaryColorDark};
+        --tag-bg: ${tagBgDark};
+        --tag-text: ${tagTextDark};
+        --code-bg: ${codeBgDark};
+        --code-text: ${codeTextDark};
+        --moon-icon-color: ${moonIconColorDark};
+      }
+      /* Ensure other colors derived from primary-brand also update */
+      .text-primary-brand { color: var(--primary-brand); }
+      .bg-primary-brand { background-color: var(--primary-brand); }
+      .gradient-bg { background: linear-gradient(135deg, var(--primary-brand), var(--secondary-brand-color)); }
+      .btn-primary { background: linear-gradient(135deg, var(--primary-brand), var(--secondary-brand-color)); }
+      .btn-primary:hover { box-shadow: 0 0 15px var(--flash-red); } /* Adjusted from red-600 */
+      .social-icon:hover { filter: drop-shadow(0 0 8px var(--primary-brand)) grayscale(0%) brightness(100%); }
+      .email-button-glow:hover { box-shadow: 0 0 20px ${flashColor}; } /* Adjusted to dynamic flashColor */
+      .btn-back:hover { box-shadow: 0 2px 4px var(--primary-brand); }
+      .spinner { border-top: 8px solid var(--primary-brand); }
+    </style>
+    `;
   // Function to generate the HTML content
   const generateHtml = () => {
     if (!validateForm()) {
@@ -514,6 +1236,11 @@ ${block.code}
       return '';
     }).join('\n');
 
+ 
+
+    // Combine original style.css content with dynamic CSS variables
+    const combinedStyleCssForPreview = `${styleCssContent}\n${customCssVars}`;
+
 
     const htmlContent = `<!DOCTYPE html>
 <html lang="en" class="dark">
@@ -541,7 +1268,10 @@ ${block.code}
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
     <script src="https://cdn.tailwindcss.com"></script>
-    <script defer src="particles.js"></script>
+    <script src="particles.js"></script>
+    <!-- Include JSZip and FileSaver.js from CDN for ZIP download functionality -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.7.1/jszip.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/2.0.5/FileSaver.min.js"></script>
     <script type="application/ld+json">
     {
     "@context": "https://schema.org",
@@ -556,8 +1286,9 @@ ${block.code}
     "alumniOf": "${alumniOf}"
     }
     </script>
-    <link rel="stylesheet" href="assets/css/style.css">
     <link rel="stylesheet" href="assets/css/code-snippets.css">
+    
+    <style>${combinedStyleCssForPreview}</style>
     <style>
       /* Aspect ratio for responsive video embeds */
       .aspect-w-16 { --tw-aspect-w: 16; }
@@ -684,12 +1415,9 @@ ${block.code}
     </footer>
 
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-    <script src="assets/js/script.js"></script>
-    <script>
-        // This script block is intentionally minimal as the theme toggle and mobile menu
-        // logic is handled by assets/js/script.js as per your existing portfolio structure.
-        document.getElementById('current-year').textContent = new Date().getFullYear();
-    </script>
+    <script src="particles.js"></script>
+    <!-- Live preview embedded script -->
+    <script>${scriptJsContent}</script>
 </body>
 </html>`;
     setGeneratedHtml(htmlContent);
@@ -724,7 +1452,11 @@ const data = {
   })),
   problemSolved, myRole, keyFeatures, technologiesUsedDesc, challengesSolutions,
   learnings, futureEnhancements, technologiesTags, authorName, linkedinUrl, ogImageUrl,
-  twitterImageUrl, faviconUrl, logoUrl, jobTitle, alumniOf, enableCodeGemini
+  twitterImageUrl, faviconUrl, logoUrl, jobTitle, alumniOf, enableCodeGemini,
+  // Export color states
+  primaryColor, secondaryColor, flashColor,
+  bgColorLight, textColorLight, cardBgLight, sectionBgLight, borderColorLight, tagBgLight, tagTextLight, codeBgLight, codeTextLight, moonIconColorLight,
+  bgColorDark, textColorDark, cardBgDark, sectionBgDark, borderColorDark, secondaryColorDark, tagBgDark, tagTextDark, codeBgDark, codeTextDark, moonIconColorDark,
 };
     const jsonString = JSON.stringify(data, null, 2);
     const blob = new Blob([jsonString], { type: 'application/json' });
@@ -775,6 +1507,33 @@ const data = {
           setAlumniOf(importedData.alumniOf || '');
           setEnableCodeGemini(importedData.enableCodeGemini !== undefined ? importedData.enableCodeGemini : false);
 
+          // Import color states
+          setPrimaryColor(importedData.primaryColor || '#4f46e5');
+          setSecondaryColor(importedData.secondaryColor || '#14b8a6');
+          setFlashColor(importedData.flashColor || '#dc2626');
+          setBgColorLight(importedData.bgColorLight || '#f9fafb');
+          setTextColorLight(importedData.textColorLight || '#1e293b');
+          setCardBgLight(importedData.cardBgLight || '#ffffff');
+          setSectionBgLight(importedData.sectionBgLight || '#f1f5f9');
+          setBorderColorLight(importedData.borderColorLight || '#e2e8f0');
+          setTagBgLight(importedData.tagBgLight || '#e2e8f0');
+          setTagTextLight(importedData.tagTextLight || '#1e293b');
+          setCodeBgLight(importedData.codeBgLight || '#f3f4f6');
+          setCodeTextLight(importedData.codeTextLight || '#1f2937');
+          setMoonIconColorLight(importedData.moonIconColorLight || '#1e293b');
+          setBgColorDark(importedData.bgColorDark || '#0f172a');
+          setTextColorDark(importedData.textColorDark || '#e2e8f0');
+          setCardBgDark(importedData.cardBgDark || '#1e293b');
+          setSectionBgDark(importedData.sectionBgDark || '#1e293b');
+          setBorderColorDark(importedData.borderColorDark || '#475569');
+          setSecondaryColorDark(importedData.secondaryColorDark || '#2dd4bf');
+          setTagBgDark(importedData.tagBgDark || '#475569');
+          setTagTextDark(importedData.tagTextDark || '#e2e8f0');
+          setCodeBgDark(importedData.codeBgDark || '#1f2937');
+          setCodeTextDark(importedData.codeTextDark || '#f9fafb');
+          setMoonIconColorDark(importedData.moonIconColorDark || '#e2e8f0');
+
+
           showNotification('Project data imported successfully!', 'success');
         } catch (error) {
           console.error('Error parsing JSON:', error);
@@ -790,14 +1549,45 @@ const downloadZip = async () => {
     return;
   }
 
-  // Check for JSZip and saveAs availability
+  // Check for JSZip and saveAs availability globally (via CDN)
   if (!JSZip || !saveAs) {
-    showNotification('Required dependencies (jszip or file-saver) are missing. Please install them using "npm install jszip file-saver".', 'error');
+    showNotification('JSZip or FileSaver.js are not loaded. Please ensure CDN scripts are present in the generated HTML for ZIP download.', 'error');
     return;
   }
 
-  const zip = new JSZip();
+  const zip = new JSZip(); // Use window.JSZip
   zip.file("index.html", generatedHtml);
+
+  // Add script.js to assets/js folder
+  const jsFolder = zip.folder("assets/js");
+  jsFolder.file("script.js", scriptJsContent);
+
+  // Combine original style.css content with dynamic CSS variables
+  const combinedStyleCssForZip = `${styleCssContent}\n${customCssVars}`;
+  // Add combined style.css to assets/css folder
+  const cssFolder = zip.folder("assets/css");
+  cssFolder.file("style.css", combinedStyleCssForZip);
+  
+  // Add code-snippets.css (assuming it's static and needed)
+  // For demonstration, let's include a dummy or placeholder if it's not provided
+  cssFolder.file("code-snippets.css", `/* Basic styles for code snippets */
+.code-snippet-container {
+    background-color: var(--code-bg);
+    color: var(--code-text);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    overflow-x: auto;
+    font-family: monospace;
+    font-size: 0.875rem;
+    box-shadow: inset 0 2px 4px 0 var(--code-shadow);
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease;
+}
+.code-snippet-container pre,
+.code-snippet-container code {
+    background-color: transparent;
+    color: inherit;
+}`);
+
 
   // Add uploaded videos
   const videoFolder = zip.folder("assets/videos");
@@ -817,7 +1607,7 @@ const downloadZip = async () => {
 
   try {
     const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, `${projectName.toLowerCase().replace(/\s/g, '-')}-export.zip`);
+    saveAs(blob, `${projectName.toLowerCase().replace(/\s/g, '-')}-export.zip`); // Use window.saveAs
     showNotification('ZIP file exported successfully!', 'success');
   } catch (error) {
     console.error('Error generating ZIP:', error);
@@ -825,16 +1615,37 @@ const downloadZip = async () => {
   }
 };
 
+  // Effect to handle delayed live preview update
+  useEffect(() => {
+    let timer;
+    if (showPreviewPanel && generatedHtml) {
+      setIsUpdatingPreview(true);
+      timer = setTimeout(() => {
+        setLivePreviewHtml(generatedHtml);
+        setIsUpdatingPreview(false);
+      }, 1000); // 1-second delay
+    } else if (!showPreviewPanel) {
+      setLivePreviewHtml(''); // Clear preview when panel is hidden
+    }
+    return () => clearTimeout(timer); // Cleanup function to clear timeout if generatedHtml changes or panel is hidden
+  }, [generatedHtml, showPreviewPanel]);
+
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-col items-center justify-center p-4 text-gray-900 dark:text-gray-100 dark">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-4xl">
+    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-row p-4 text-gray-900 dark:text-gray-100 dark">
+      {/* Main Content (Input Form) */}
+      <div className={`${showPreviewPanel ? 'w-1/2 max-w-2xl' : 'w-full max-w-4xl'} bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${showPreviewPanel ? 'mr-4' : ''}`}>
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
           Project Page HTML Generator
         </h1>
 
+        {/* Toggle Live Preview Button */}
+        <button
+          onClick={() => setShowPreviewPanel(!showPreviewPanel)}
+          className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mb-6"
+        >
+          {showPreviewPanel ? 'Hide Live Preview' : 'Show Live Preview'}
+        </button>
         
-        
-
         {/* Save/Load Buttons */}
         <div className="absolute top-4 left-4 flex space-x-2 z-50">
           <button
@@ -985,6 +1796,131 @@ const downloadZip = async () => {
           </label>
         </div>
 
+        {/* Theme Color Customization */}
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Theme Color Customization</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div className="col-span-2">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">General Colors:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="primaryColor" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                  Primary Brand Color:
+                </label>
+                <input type="color" id="primaryColor" className="w-full h-10 rounded-lg cursor-pointer" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="secondaryColor" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                  Secondary Brand Color:
+                </label>
+                <input type="color" id="secondaryColor" className="w-full h-10 rounded-lg cursor-pointer" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="flashColor" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                  Flash/Accent Color:
+                </label>
+                <input type="color" id="flashColor" className="w-full h-10 rounded-lg cursor-pointer" value={flashColor} onChange={(e) => setFlashColor(e.target.value)} />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-2">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 mt-4">Light Mode Colors:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="bgColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Body Background:</label>
+                <input type="color" id="bgColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={bgColorLight} onChange={(e) => setBgColorLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="textColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Default Text:</label>
+                <input type="color" id="textColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={textColorLight} onChange={(e) => setTextColorLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="cardBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Card Background:</label>
+                <input type="color" id="cardBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={cardBgLight} onChange={(e) => setCardBgLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="sectionBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Section Background:</label>
+                <input type="color" id="sectionBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={sectionBgLight} onChange={(e) => setSectionBgLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="borderColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Border Color:</label>
+                <input type="color" id="borderColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={borderColorLight} onChange={(e) => setBorderColorLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="tagBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Background:</label>
+                <input type="color" id="tagBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={tagBgLight} onChange={(e) => setTagBgLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="tagTextLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Text:</label>
+                <input type="color" id="tagTextLight" className="w-full h-10 rounded-lg cursor-pointer" value={tagTextLight} onChange={(e) => setTagTextLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="codeBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Background:</label>
+                <input type="color" id="codeBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={codeBgLight} onChange={(e) => setCodeBgLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="codeTextLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Text:</label>
+                <input type="color" id="codeTextLight" className="w-full h-10 rounded-lg cursor-pointer" value={codeTextLight} onChange={(e) => setCodeTextLight(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="moonIconColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Moon Icon (Light Mode):</label>
+                <input type="color" id="moonIconColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={moonIconColorLight} onChange={(e) => setMoonIconColorLight(e.target.value)} />
+              </div>
+            </div>
+          </div>
+
+          <div className="col-span-2">
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 mt-4">Dark Mode Colors:</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div>
+                <label htmlFor="bgColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Body Background:</label>
+                <input type="color" id="bgColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={bgColorDark} onChange={(e) => setBgColorDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="textColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Default Text:</label>
+                <input type="color" id="textColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={textColorDark} onChange={(e) => setTextColorDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="cardBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Card Background:</label>
+                <input type="color" id="cardBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={cardBgDark} onChange={(e) => setCardBgDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="sectionBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Section Background:</label>
+                <input type="color" id="sectionBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={sectionBgDark} onChange={(e) => setSectionBgDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="borderColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Border Color:</label>
+                <input type="color" id="borderColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={borderColorDark} onChange={(e) => setBorderColorDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="secondaryColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Secondary Brand Color (Dark):</label>
+                <input type="color" id="secondaryColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={secondaryColorDark} onChange={(e) => setSecondaryColorDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="tagBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Background:</label>
+                <input type="color" id="tagBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={tagBgDark} onChange={(e) => setTagBgDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="tagTextDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Text:</label>
+                <input type="color" id="tagTextDark" className="w-full h-10 rounded-lg cursor-pointer" value={tagTextDark} onChange={(e) => setTagTextDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="codeBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Background:</label>
+                <input type="color" id="codeBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={codeBgDark} onChange={(e) => setCodeBgDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="codeTextDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Text:</label>
+                <input type="color" id="codeTextDark" className="w-full h-10 rounded-lg cursor-pointer" value={codeTextDark} onChange={(e) => setCodeTextDark(e.target.value)} />
+              </div>
+              <div>
+                <label htmlFor="moonIconColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Moon Icon (Dark Mode):</label>
+                <input type="color" id="moonIconColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={moonIconColorDark} onChange={(e) => setMoonIconColorDark(e.target.value)} />
+              </div>
+            </div>
+          </div>
+        </div>
+
+
         {/* Detailed Project Aspects */}
         <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Detailed Project Aspects</h2>
 
@@ -1114,7 +2050,7 @@ const downloadZip = async () => {
 
         {contentBlocks.map((block, index) => (
           <div key={block.id} 
-        ref={index === contentBlocks.length - 1 ? lastBlockRef : null}
+          ref={index === contentBlocks.length - 1 ? lastBlockRef : null}
           className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-inner mb-4 border border-gray-200 dark:border-gray-600">
             <div className="flex justify-between items-center mb-3">
               <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 capitalize">{block.type} Block {index + 1}</h3>
@@ -1614,6 +2550,27 @@ const downloadZip = async () => {
           </div>
         )}
       </div>
+      {/* Live Preview Panel */}
+      {showPreviewPanel && (
+        <div className={`relative w-1/2 min-w-0 flex-shrink-0 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out flex-1 overflow-y-auto ml-4`}>
+          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4 text-center">Live Preview</h2>
+          {isUpdatingPreview && (
+            <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 z-10 rounded-xl">
+              <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold animate-pulse">
+                Updating preview...
+              </p>
+            </div>
+          )}
+          <iframe
+            id="live-preview-iframe"
+            title="Live HTML Preview"
+            srcDoc={livePreviewHtml}
+            className="w-full h-full border border-gray-300 dark:border-gray-600 rounded-lg bg-white dark:bg-gray-900"
+            // Set min-height here as an inline style for the iframe itself, or rely on flex-1 to fill the parent.
+            // style={{ minHeight: '80vh' }} is not needed if parent handles flex correctly
+          ></iframe>
+        </div>
+      )}
       {notification && (
         <Notification
           message={notification.message}
