@@ -1633,7 +1633,7 @@ const downloadZip = async () => {
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-row p-4 text-gray-900 dark:text-gray-100 dark">
       {/* Main Content (Input Form) */}
-      <div className={`${showPreviewPanel ? 'w-1/2 max-w-2xl' : 'w-full max-w-4xl'} bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${showPreviewPanel ? 'mr-4' : ''}`}>
+      <div className={`${showPreviewPanel ? 'w-1/2 max-w-2xl' : 'w-full max-w'} bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${showPreviewPanel ? 'mr-4' : ''}`}>
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
           Project Page HTML Generator
         </h1>
