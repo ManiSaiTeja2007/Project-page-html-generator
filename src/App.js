@@ -1,12 +1,12 @@
-import React, { useState, useRef, useEffect } from 'react';
-import JSZip from 'jszip'; // REMOVED: Jszip will be loaded via CDN in the generated HTML
-import { saveAs } from 'file-saver' // REMOVED: File-saver will be loaded via CDN in the generated HTML
-import './App.css'; // REMOVED: This file is not provided and causes compilation errors.
+import React, { useState, useRef, useEffect } from "react";
+import JSZip from "jszip"; // REMOVED: Jszip will be loaded via CDN in the generated HTML
+import { saveAs } from "file-saver"; // REMOVED: File-saver will be loaded via CDN in the generated HTML
+import "./App.css"; // REMOVED: This file is not provided and causes compilation errors.
 
 // Custom Notification Component (replaces alert/confirm)
 const Notification = ({ message, type, onClose }) => {
-  const bgColor = type === 'success' ? 'bg-green-500' : 'bg-red-500';
-  const textColor = 'text-white';
+  const bgColor = type === "success" ? "bg-green-500" : "bg-red-500";
+  const textColor = "text-white";
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -16,7 +16,9 @@ const Notification = ({ message, type, onClose }) => {
   }, [onClose]);
 
   return (
-    <div className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg ${bgColor} ${textColor} z-50 transition-all duration-300 transform translate-y-0 opacity-100`}>
+    <div
+      className={`fixed bottom-4 right-4 p-4 rounded-lg shadow-lg ${bgColor} ${textColor} z-50 transition-all duration-300 transform translate-y-0 opacity-100`}
+    >
       <div className="flex items-center justify-between">
         <span>{message}</span>
         <button onClick={onClose} className="ml-4 text-white font-bold">
@@ -34,19 +36,22 @@ const DynamicTextarea = ({ value, onChange, maxRows = 200, ...props }) => {
   useEffect(() => {
     if (textareaRef.current) {
       // Reset height to auto to correctly calculate scrollHeight
-      textareaRef.current.style.height = 'auto';
+      textareaRef.current.style.height = "auto";
       // Set height to scrollHeight
-      textareaRef.current.style.height = textareaRef.current.scrollHeight + 'px';
+      textareaRef.current.style.height =
+        textareaRef.current.scrollHeight + "px";
 
       // Calculate max height based on maxRows and line-height
-      const lineHeight = parseFloat(getComputedStyle(textareaRef.current).lineHeight);
+      const lineHeight = parseFloat(
+        getComputedStyle(textareaRef.current).lineHeight
+      );
       const maxHeight = lineHeight * maxRows;
 
       if (textareaRef.current.scrollHeight > maxHeight) {
-        textareaRef.current.style.overflowY = 'auto';
-        textareaRef.current.style.height = maxHeight + 'px';
+        textareaRef.current.style.overflowY = "auto";
+        textareaRef.current.style.height = maxHeight + "px";
       } else {
-        textareaRef.current.style.overflowY = 'hidden';
+        textareaRef.current.style.overflowY = "hidden";
       }
     }
   }, [value, maxRows]); // Re-run when value or maxRows changes
@@ -62,48 +67,83 @@ const DynamicTextarea = ({ value, onChange, maxRows = 200, ...props }) => {
   );
 };
 
-
 // Main App component
 const App = () => {
   // State variables for main project details
-  const [projectName, setProjectName] = useState('My Awesome Project');
-  const [projectSubtitle, setProjectSubtitle] = useState('A brief and exciting tagline for your project.');
-  const [projectDescription, setProjectDescription] = useState('This project is designed to showcase how you can build dynamic and interactive web applications using modern technologies. It aims to solve a common problem by providing an intuitive solution.'); // Initial overview description
-  const [userApiKey, setUserApiKey] = useState('');
-  const [projectUrl, setProjectUrl] = useState('https://your-username.github.io/your-project-name/index.html'); // Used for OG/Twitter URL
-  const [liveDemoUrl, setLiveDemoUrl] = useState('https://example.com/your-project-demo');
-  const [githubRepoUrl, setGithubRepoUrl] = useState('https://github.com/your-username/your-project');
+  const [projectName, setProjectName] = useState("My Awesome Project");
+  const [projectSubtitle, setProjectSubtitle] = useState(
+    "A brief and exciting tagline for your project."
+  );
+  const [projectDescription, setProjectDescription] = useState(
+    "This project is designed to showcase how you can build dynamic and interactive web applications using modern technologies. It aims to solve a common problem by providing an intuitive solution."
+  ); // Initial overview description
+  const [userApiKey, setUserApiKey] = useState("");
+  const [projectUrl, setProjectUrl] = useState(
+    "https://your-username.github.io/your-project-name/index.html"
+  ); // Used for OG/Twitter URL
+  const [liveDemoUrl, setLiveDemoUrl] = useState(
+    "https://example.com/your-project-demo"
+  );
+  const [githubRepoUrl, setGithubRepoUrl] = useState(
+    "https://github.com/your-username/your-project"
+  );
 
   // State variables for detailed description content blocks
   const [contentBlocks, setContentBlocks] = useState([]); // Empty array for a clean slate
 
   // State variables for detailed project aspects
-  const [problemSolved, setProblemSolved] = useState('This project addresses the challenge of [describe the problem], providing a streamlined approach to [describe the solution].');
-  const [myRole, setMyRole] = useState('As the lead developer, I was responsible for [mention your key responsibilities, e.g., frontend development, backend integration, database design].');
-  const [keyFeatures, setKeyFeatures] = useState('Feature A, Feature B, Feature C, Responsive design, User authentication'); // Comma separated, will convert to list
-  const [technologiesUsedDesc, setTechnologiesUsedDesc] = useState('The application was built using [Frontend Tech] for the user interface, [Backend Tech] for server-side logic, and [Database Tech] for data persistence.'); // Technologies mentioned in description
-  const [challengesSolutions, setChallengesSolutions] = useState('One significant challenge was [describe a challenge], which was overcome by [explain your solution].');
-  const [learnings, setLearnings] = useState('Through this project, I gained valuable insights into [mention key learnings, e.g., real-time data handling, API design, scalable architecture].');
-  const [futureEnhancements, setFutureEnhancements] = useState('Future plans include adding [new feature 1], improving [aspect 2], and exploring [technology 3].');
+  const [problemSolved, setProblemSolved] = useState(
+    "This project addresses the challenge of [describe the problem], providing a streamlined approach to [describe the solution]."
+  );
+  const [myRole, setMyRole] = useState(
+    "As the lead developer, I was responsible for [mention your key responsibilities, e.g., frontend development, backend integration, database design]."
+  );
+  const [keyFeatures, setKeyFeatures] = useState(
+    "Feature A, Feature B, Feature C, Responsive design, User authentication"
+  ); // Comma separated, will convert to list
+  const [technologiesUsedDesc, setTechnologiesUsedDesc] = useState(
+    "The application was built using [Frontend Tech] for the user interface, [Backend Tech] for server-side logic, and [Database Tech] for data persistence."
+  ); // Technologies mentioned in description
+  const [challengesSolutions, setChallengesSolutions] = useState(
+    "One significant challenge was [describe a challenge], which was overcome by [explain your solution]."
+  );
+  const [learnings, setLearnings] = useState(
+    "Through this project, I gained valuable insights into [mention key learnings, e.g., real-time data handling, API design, scalable architecture]."
+  );
+  const [futureEnhancements, setFutureEnhancements] = useState(
+    "Future plans include adding [new feature 1], improving [aspect 2], and exploring [technology 3]."
+  );
 
   // State variables for metadata and external links
-  const [technologiesTags, setTechnologiesTags] = useState('React, Tailwind CSS, JavaScript, Node.js, Express, MongoDB'); // Comma separated for tags
-  const [authorName, setAuthorName] = useState('Your Name Here');
-  const [linkedinUrl, setLinkedinUrl] = useState('https://www.linkedin.com/in/your-linkedin-profile');
-  const [ogImageUrl, setOgImageUrl] = useState('https://placehold.co/1200x630/E0E7FF/4338CA?text=Project+OG+Image');
-  const [twitterImageUrl, setTwitterImageUrl] = useState('https://placehold.co/1200x675/E0E7FF/4338CA?text=Project+Twitter+Image');
-  const [faviconUrl, setFaviconUrl] = useState('https://placehold.co/32x32/E0E7FF/4338CA?text=Fav');
-  const [logoUrl, setLogoUrl] = useState('https://placehold.co/40x40/E0E7FF/4338CA?text=Logo');
-  const [jobTitle, setJobTitle] = useState('Your Job Title');
-  const [alumniOf, setAlumniOf] = useState('Your University/Institution');
+  const [technologiesTags, setTechnologiesTags] = useState(
+    "React, Tailwind CSS, JavaScript, Node.js, Express, MongoDB"
+  ); // Comma separated for tags
+  const [authorName, setAuthorName] = useState("Your Name Here");
+  const [linkedinUrl, setLinkedinUrl] = useState(
+    "https://www.linkedin.com/in/your-linkedin-profile"
+  );
+  const [ogImageUrl, setOgImageUrl] = useState(
+    "https://placehold.co/1200x630/E0E7FF/4338CA?text=Project+OG+Image"
+  );
+  const [twitterImageUrl, setTwitterImageUrl] = useState(
+    "https://placehold.co/1200x675/E0E7FF/4338CA?text=Project+Twitter+Image"
+  );
+  const [faviconUrl, setFaviconUrl] = useState(
+    "https://placehold.co/32x32/E0E7FF/4338CA?text=Fav"
+  );
+  const [logoUrl, setLogoUrl] = useState(
+    "https://placehold.co/40x40/E0E7FF/4338CA?text=Logo"
+  );
+  const [jobTitle, setJobTitle] = useState("Your Job Title");
+  const [alumniOf, setAlumniOf] = useState("Your University/Institution");
 
-  const [generatedHtml, setGeneratedHtml] = useState('');
+  const [generatedHtml, setGeneratedHtml] = useState("");
   const htmlOutputRef = useRef(null);
   const fileInputRef = useRef(null); // Ref for file input
 
   // Loading state for Gemini API call
   const [isLoadingGemini, setIsLoadingGemini] = useState(false);
-  const [geminiError, setGeminiError] = useState('');
+  const [geminiError, setGeminiError] = useState("");
 
   // New state for auto-writing code snippets
   const [enableCodeGemini, setEnableCodeGemini] = useState(false);
@@ -117,43 +157,42 @@ const App = () => {
 
   // Live preview states
   const [showPreviewPanel, setShowPreviewPanel] = useState(false);
-  const [livePreviewHtml, setLivePreviewHtml] = useState('');
+  const [livePreviewHtml, setLivePreviewHtml] = useState("");
   const [isUpdatingPreview, setIsUpdatingPreview] = useState(false);
 
   // Theme color states
-  const [primaryColor, setPrimaryColor] = useState('#4f46e5'); // indigo-600
-  const [secondaryColor, setSecondaryColor] = useState('#14b8a6'); // teal-500
-  const [flashColor, setFlashColor] = useState('#dc2626'); // red-600
+  const [primaryColor, setPrimaryColor] = useState("#4f46e5"); // indigo-600
+  const [secondaryColor, setSecondaryColor] = useState("#14b8a6"); // teal-500
+  const [flashColor, setFlashColor] = useState("#dc2626"); // red-600
 
   // Light Mode Colors
-  const [bgColorLight, setBgColorLight] = useState('#f9fafb'); // slate-50
-  const [textColorLight, setTextColorLight] = useState('#1e293b'); // slate-900
-  const [cardBgLight, setCardBgLight] = useState('#ffffff');
-  const [sectionBgLight, setSectionBgLight] = useState('#f1f5f9'); // slate-100
-  const [borderColorLight, setBorderColorLight] = useState('#e2e8f0'); // slate-200
-  const [tagBgLight, setTagBgLight] = useState('#e2e8f0'); // slate-200
-  const [tagTextLight, setTagTextLight] = useState('#1e293b'); // slate-900
-  const [codeBgLight, setCodeBgLight] = useState('#f3f4f6');
-  const [codeTextLight, setCodeTextLight] = useState('#1f2937');
-  const [moonIconColorLight, setMoonIconColorLight] = useState('#1e293b');
-
+  const [bgColorLight, setBgColorLight] = useState("#f9fafb"); // slate-50
+  const [textColorLight, setTextColorLight] = useState("#1e293b"); // slate-900
+  const [cardBgLight, setCardBgLight] = useState("#ffffff");
+  const [sectionBgLight, setSectionBgLight] = useState("#f1f5f9"); // slate-100
+  const [borderColorLight, setBorderColorLight] = useState("#e2e8f0"); // slate-200
+  const [tagBgLight, setTagBgLight] = useState("#e2e8f0"); // slate-200
+  const [tagTextLight, setTagTextLight] = useState("#1e293b"); // slate-900
+  const [codeBgLight, setCodeBgLight] = useState("#f3f4f6");
+  const [codeTextLight, setCodeTextLight] = useState("#1f2937");
+  const [moonIconColorLight, setMoonIconColorLight] = useState("#1e293b");
 
   // Dark Mode Colors
-  const [bgColorDark, setBgColorDark] = useState('#0f172a'); // slate-900
-  const [textColorDark, setTextColorDark] = useState('#e2e8f0'); // slate-200
-  const [cardBgDark, setCardBgDark] = useState('#1e293b'); // slate-800
-  const [sectionBgDark, setSectionBgDark] = useState('#1e293b'); // slate-800
-  const [borderColorDark, setBorderColorDark] = useState('#475569'); // slate-600
-  const [secondaryColorDark, setSecondaryColorDark] = useState('#2dd4bf'); // teal-400
-  const [tagBgDark, setTagBgDark] = useState('#475569'); // slate-600
-  const [tagTextDark, setTagTextDark] = useState('#e2e8f0'); // slate-200
-  const [codeBgDark, setCodeBgDark] = useState('#1f2937');
-  const [codeTextDark, setCodeTextDark] = useState('#f9fafb');
-  const [moonIconColorDark, setMoonIconColorDark] = useState('#e2e8f0');
+  const [bgColorDark, setBgColorDark] = useState("#0f172a"); // slate-900
+  const [textColorDark, setTextColorDark] = useState("#e2e8f0"); // slate-200
+  const [cardBgDark, setCardBgDark] = useState("#1e293b"); // slate-800
+  const [sectionBgDark, setSectionBgDark] = useState("#1e293b"); // slate-800
+  const [borderColorDark, setBorderColorDark] = useState("#475569"); // slate-600
+  const [secondaryColorDark, setSecondaryColorDark] = useState("#2dd4bf"); // teal-400
+  const [tagBgDark, setTagBgDark] = useState("#475569"); // slate-600
+  const [tagTextDark, setTagTextDark] = useState("#e2e8f0"); // slate-200
+  const [codeBgDark, setCodeBgDark] = useState("#1f2937");
+  const [codeTextDark, setCodeTextDark] = useState("#f9fafb");
+  const [moonIconColorDark, setMoonIconColorDark] = useState("#e2e8f0");
 
   // State to hold script.js and style.css content
-  const [scriptJsContent, setScriptJsContent] = useState('');
-  const [styleCssContent, setStyleCssContent] = useState('');
+  const [scriptJsContent, setScriptJsContent] = useState("");
+  const [styleCssContent, setStyleCssContent] = useState("");
 
   // Fetch script.js and style.css content on component mount
   useEffect(() => {
@@ -816,69 +855,79 @@ html {
   // Validate all fields before generating HTML
   const validateForm = () => {
     const errors = {};
-    if (!projectName.trim()) errors.projectName = 'Project Name is required.';
-    if (!projectDescription.trim()) errors.projectDescription = 'Project Overview Description is required.';
-    if (!liveDemoUrl.trim()) errors.liveDemoUrl = 'Live Demo URL is required.';
-    else if (!isValidUrl(liveDemoUrl)) errors.liveDemoUrl = 'Invalid URL format.';
-    if (!githubRepoUrl.trim()) errors.githubRepoUrl = 'GitHub Repo URL is required.';
-    else if (!isValidUrl(githubRepoUrl)) errors.githubRepoUrl = 'Invalid URL format.';
-    if (!authorName.trim()) errors.authorName = 'Author Name is required.';
+    if (!projectName.trim()) errors.projectName = "Project Name is required.";
+    if (!projectDescription.trim())
+      errors.projectDescription = "Project Overview Description is required.";
+    if (!liveDemoUrl.trim()) errors.liveDemoUrl = "Live Demo URL is required.";
+    else if (!isValidUrl(liveDemoUrl))
+      errors.liveDemoUrl = "Invalid URL format.";
+    if (!githubRepoUrl.trim())
+      errors.githubRepoUrl = "GitHub Repo URL is required.";
+    else if (!isValidUrl(githubRepoUrl))
+      errors.githubRepoUrl = "Invalid URL format.";
+    if (!authorName.trim()) errors.authorName = "Author Name is required.";
 
     // Validate URLs for dynamic content blocks
-contentBlocks.forEach((block, index) => {
-  if (block.type === 'image') {
-    if (block.sourceType === 'url') {
-        if (!block.url.trim()) {
-          errors[`contentBlockUrl-${index}`] = 'Image URL is required.';
-        } else if (!isValidUrl(block.url)) {
-          errors[`contentBlockUrl-${index}`] = 'Invalid URL format for image.';
+    contentBlocks.forEach((block, index) => {
+      if (block.type === "image") {
+        if (block.sourceType === "url") {
+          if (!block.url.trim()) {
+            errors[`contentBlockUrl-${index}`] = "Image URL is required.";
+          } else if (!isValidUrl(block.url)) {
+            errors[`contentBlockUrl-${index}`] =
+              "Invalid URL format for image.";
+          }
+        } else if (block.sourceType === "upload" && !block.uploadedFile) {
+          errors[`contentBlockUrl-${index}`] =
+            "Image file is required for upload.";
         }
-      } else if (block.sourceType === 'upload' && !block.uploadedFile) {
-        errors[`contentBlockUrl-${index}`] = 'Image file is required for upload.';
+      } else if (block.type === "video") {
+        if (block.sourceType === "youtube" || block.sourceType === "mp4") {
+          if (!block.url.trim()) {
+            errors[`contentBlockUrl-${index}`] = "Video URL is required.";
+          } else if (!isValidUrl(block.url)) {
+            errors[`contentBlockUrl-${index}`] =
+              "Invalid URL format for video.";
+          } else if (
+            block.sourceType === "youtube" &&
+            !getYouTubeVideoId(block.url)
+          ) {
+            errors[`contentBlockUrl-${index}`] = "Invalid YouTube URL.";
+          }
+        } else if (block.sourceType === "upload" && !block.uploadedFile) {
+          errors[`contentBlockUrl-${index}`] =
+            "Video file is required for upload.";
+        }
       }
-  } else if (block.type === 'video') {
-    if (block.sourceType === 'youtube' || block.sourceType === 'mp4') {
-      if (!block.url.trim()) {
-        errors[`contentBlockUrl-${index}`] = 'Video URL is required.';
-      } else if (!isValidUrl(block.url)) {
-        errors[`contentBlockUrl-${index}`] = 'Invalid URL format for video.';
-      } else if (block.sourceType === 'youtube' && !getYouTubeVideoId(block.url)) {
-        errors[`contentBlockUrl-${index}`] = 'Invalid YouTube URL.';
-      }
-    } else if (block.sourceType === 'upload' && !block.uploadedFile) {
-      errors[`contentBlockUrl-${index}`] = 'Video file is required for upload.';
-    }
-  }
-});
+    });
 
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-const [isNewBlockAdded, setIsNewBlockAdded] = useState(false);
+  const [isNewBlockAdded, setIsNewBlockAdded] = useState(false);
 
-// Function to add a new content block
-const addContentBlock = (type) => {
+  // Function to add a new content block
+  const addContentBlock = (type) => {
     const newBlock = { id: Date.now(), type }; // Unique ID for key prop
-    if (type === 'text') {
-      newBlock.content = '';
-    } else if (type === 'image') {
-    newBlock.sourceType = 'url'; // Default to URL input
-    newBlock.url = ''; // URL for external images or object URL for uploaded files
-    newBlock.alt = '';
-    newBlock.caption = '';
-    newBlock.uploadedFile = null; // For uploaded image files
-    newBlock.error = ''; // For error handling during preview
-    } else if (type === 'video') {
-    newBlock.sourceType = 'youtube'; // Default to YouTube
-    newBlock.url = ''; // URL for YouTube or MP4
-    newBlock.caption = '';
-    newBlock.uploadedFile = null; // For uploaded video files
-
-    } else if (type === 'code') {
-      newBlock.language = '';
-      newBlock.code = '';
-      newBlock.description = '';
+    if (type === "text") {
+      newBlock.content = "";
+    } else if (type === "image") {
+      newBlock.sourceType = "url"; // Default to URL input
+      newBlock.url = ""; // URL for external images or object URL for uploaded files
+      newBlock.alt = "";
+      newBlock.caption = "";
+      newBlock.uploadedFile = null; // For uploaded image files
+      newBlock.error = ""; // For error handling during preview
+    } else if (type === "video") {
+      newBlock.sourceType = "youtube"; // Default to YouTube
+      newBlock.url = ""; // URL for YouTube or MP4
+      newBlock.caption = "";
+      newBlock.uploadedFile = null; // For uploaded video files
+    } else if (type === "code") {
+      newBlock.language = "";
+      newBlock.code = "";
+      newBlock.description = "";
     }
     setContentBlocks([...contentBlocks, newBlock]);
     setIsNewBlockAdded(true);
@@ -892,68 +941,81 @@ const addContentBlock = (type) => {
   };
 
   // Function to remove a content block
-const removeContentBlock = (index) => {
-  const block = contentBlocks[index];
-  if ((block.type === 'video' || block.type === 'image') && block.url && block.url.startsWith('blob:')) {
-    URL.revokeObjectURL(block.url);
-  }
-
-const updatedBlocks = contentBlocks.filter((_, i) => i !== index);
-  setContentBlocks(updatedBlocks);
-};
-
-const getYouTubeVideoId = (url) => {
-  const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/);
-  return match ? match[1] : '';
-};
-  // Function to move a content block up or down
-const moveContentBlock = (index, direction) => {
-  const updatedBlocks = [...contentBlocks];
-  const newIndex = direction === 'up' ? index - 1 : index + 1;
-  if (newIndex >= 0 && newIndex < updatedBlocks.length) {
-    const [movedBlock] = updatedBlocks.splice(index, 1);
-    updatedBlocks.splice(newIndex, 0, movedBlock);
-    setContentBlocks(updatedBlocks);
-    // Store the new index to scroll to after state update
-    setTimeout(() => {
-      const movedElement = document.getElementById(`block-${newIndex}`);
-      if (movedElement) {
-        movedElement.scrollIntoView({ behavior: 'smooth', block: 'center' });
-      }
-    }, 0); // Delay to ensure DOM update
-  }
-};
-useEffect(() => {
-  if (lastBlockRef.current && isNewBlockAdded) {
-    lastBlockRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    setIsNewBlockAdded(false);
-  }
-}, [contentBlocks, isNewBlockAdded]);
-const lastBlockRef = useRef(null);
-
-useEffect(() => {
-  if (lastBlockRef.current && contentBlocks.length > 0) {
-    // Only scroll to the last block if a new block was added
-    // Check if the last block's ID is new (indicating an addition)
-    const lastBlock = contentBlocks[contentBlocks.length - 1];
-    if (lastBlock.id === Date.now()) { // This assumes new blocks use Date.now() for ID
-      lastBlockRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  const removeContentBlock = (index) => {
+    const block = contentBlocks[index];
+    if (
+      (block.type === "video" || block.type === "image") &&
+      block.url &&
+      block.url.startsWith("blob:")
+    ) {
+      URL.revokeObjectURL(block.url);
     }
-  }
-}, [contentBlocks]);
 
+    const updatedBlocks = contentBlocks.filter((_, i) => i !== index);
+    setContentBlocks(updatedBlocks);
+  };
+
+  const getYouTubeVideoId = (url) => {
+    const match = url.match(
+      /(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|v\/))([a-zA-Z0-9_-]{11})/
+    );
+    return match ? match[1] : "";
+  };
+  // Function to move a content block up or down
+  const moveContentBlock = (index, direction) => {
+    const updatedBlocks = [...contentBlocks];
+    const newIndex = direction === "up" ? index - 1 : index + 1;
+    if (newIndex >= 0 && newIndex < updatedBlocks.length) {
+      const [movedBlock] = updatedBlocks.splice(index, 1);
+      updatedBlocks.splice(newIndex, 0, movedBlock);
+      setContentBlocks(updatedBlocks);
+      // Store the new index to scroll to after state update
+      setTimeout(() => {
+        const movedElement = document.getElementById(`block-${newIndex}`);
+        if (movedElement) {
+          movedElement.scrollIntoView({ behavior: "smooth", block: "center" });
+        }
+      }, 0); // Delay to ensure DOM update
+    }
+  };
+  useEffect(() => {
+    if (lastBlockRef.current && isNewBlockAdded) {
+      lastBlockRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+      setIsNewBlockAdded(false);
+    }
+  }, [contentBlocks, isNewBlockAdded]);
+  const lastBlockRef = useRef(null);
+
+  useEffect(() => {
+    if (lastBlockRef.current && contentBlocks.length > 0) {
+      // Only scroll to the last block if a new block was added
+      // Check if the last block's ID is new (indicating an addition)
+      const lastBlock = contentBlocks[contentBlocks.length - 1];
+      if (lastBlock.id === Date.now()) {
+        // This assumes new blocks use Date.now() for ID
+        lastBlockRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }
+  }, [contentBlocks]);
 
   // Function to generate code snippet for a specific block using Gemini API
   const generateCodeSnippetForBlock = async (blockIndex) => {
-    if (!userApiKey) { // Change from !apiKey to !userApiKey
-      showNotification('Please enter your Gemini API Key first.', 'error');
+    if (!userApiKey) {
+      // Change from !apiKey to !userApiKey
+      showNotification("Please enter your Gemini API Key first.", "error");
       return;
     }
     setCodeGeminiLoadingIndex(blockIndex);
-    setGeminiError('');
+    setGeminiError("");
 
     const currentBlock = contentBlocks[blockIndex];
-    if (currentBlock.type !== 'code') {
+    if (currentBlock.type !== "code") {
       setCodeGeminiLoadingIndex(null);
       return;
     }
@@ -980,43 +1042,58 @@ useEffect(() => {
           responseSchema: {
             type: "OBJECT",
             properties: {
-              "language": { "type": "STRING" },
-              "code": { "type": "STRING" },
-              "description": { "type": "STRING" }
+              language: { type: "STRING" },
+              code: { type: "STRING" },
+              description: { type: "STRING" },
             },
-            "required": ["language", "code", "description"]
-          }
-        }
+            required: ["language", "code", "description"],
+          },
+        },
       };
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${userApiKey}`;
 
       const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
-      if (result.candidates && result.candidates.length > 0 &&
-          result.candidates[0].content && result.candidates[0].content.parts &&
-          result.candidates[0].content.parts.length > 0) {
+      if (
+        result.candidates &&
+        result.candidates.length > 0 &&
+        result.candidates[0].content &&
+        result.candidates[0].content.parts &&
+        result.candidates[0].content.parts.length > 0
+      ) {
         const jsonString = result.candidates[0].content.parts[0].text;
         const parsedJson = JSON.parse(jsonString);
 
         // Update the specific content block
-        updateContentBlock(blockIndex, 'language', parsedJson.language);
-        updateContentBlock(blockIndex, 'code', parsedJson.code);
-        updateContentBlock(blockIndex, 'description', parsedJson.description);
-        showNotification(`Code snippet for block ${blockIndex + 1} generated successfully!`, 'success');
-
+        updateContentBlock(blockIndex, "language", parsedJson.language);
+        updateContentBlock(blockIndex, "code", parsedJson.code);
+        updateContentBlock(blockIndex, "description", parsedJson.description);
+        showNotification(
+          `Code snippet for block ${blockIndex + 1} generated successfully!`,
+          "success"
+        );
       } else {
-        showNotification(`Failed to generate code for block ${blockIndex + 1}.`, 'error');
-        console.error('Gemini API response structure unexpected for code:', result);
+        showNotification(
+          `Failed to generate code for block ${blockIndex + 1}.`,
+          "error"
+        );
+        console.error(
+          "Gemini API response structure unexpected for code:",
+          result
+        );
       }
     } catch (error) {
-      showNotification(`Error generating code for block ${blockIndex + 1}: ${error.message}`, 'error');
-      console.error('Error calling Gemini API for code:', error);
+      showNotification(
+        `Error generating code for block ${blockIndex + 1}: ${error.message}`,
+        "error"
+      );
+      console.error("Error calling Gemini API for code:", error);
     } finally {
       setCodeGeminiLoadingIndex(null);
     }
@@ -1024,12 +1101,13 @@ useEffect(() => {
 
   // Function to generate project details using Gemini API
   const generateProjectDetailsWithGemini = async () => {
-    if (!userApiKey) { // Change from !apiKey to !userApiKey
-      showNotification('Please enter your Gemini API Key first.', 'error');
+    if (!userApiKey) {
+      // Change from !apiKey to !userApiKey
+      showNotification("Please enter your Gemini API Key first.", "error");
       return;
     }
     setIsLoadingGemini(true);
-    setGeminiError('');
+    setGeminiError("");
 
     const prompt = `Generate comprehensive project details for a project titled "${projectName}" with the tagline "${projectSubtitle}". Provide the output in a JSON object with the following keys:
     - projectDescription (a general overview paragraph)
@@ -1052,35 +1130,48 @@ useEffect(() => {
           responseSchema: {
             type: "OBJECT",
             properties: {
-              "projectDescription": { "type": "STRING" },
-              "problemSolved": { "type": "STRING" },
-              "myRole": { "type": "STRING" },
-              "keyFeatures": {
-                "type": "ARRAY",
-                "items": { "type": "STRING" }
+              projectDescription: { type: "STRING" },
+              problemSolved: { type: "STRING" },
+              myRole: { type: "STRING" },
+              keyFeatures: {
+                type: "ARRAY",
+                items: { type: "STRING" },
               },
-              "technologiesUsedDesc": { "type": "STRING" },
-              "challengesSolutions": { "type": "STRING" },
-              "learnings": { "type": "STRING" },
-              "futureEnhancements": { "type": "STRING" }
+              technologiesUsedDesc: { type: "STRING" },
+              challengesSolutions: { type: "STRING" },
+              learnings: { type: "STRING" },
+              futureEnhancements: { type: "STRING" },
             },
-            "required": ["projectDescription", "problemSolved", "myRole", "keyFeatures", "technologiesUsedDesc", "challengesSolutions", "learnings", "futureEnhancements"]
-          }
-        }
+            required: [
+              "projectDescription",
+              "problemSolved",
+              "myRole",
+              "keyFeatures",
+              "technologiesUsedDesc",
+              "challengesSolutions",
+              "learnings",
+              "futureEnhancements",
+            ],
+          },
+        },
       };
       const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${userApiKey}`;
 
       const response = await fetch(apiUrl, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
       });
 
       const result = await response.json();
 
-      if (result.candidates && result.candidates.length > 0 &&
-          result.candidates[0].content && result.candidates[0].content.parts &&
-          result.candidates[0].content.parts.length > 0) {
+      if (
+        result.candidates &&
+        result.candidates.length > 0 &&
+        result.candidates[0].content &&
+        result.candidates[0].content.parts &&
+        result.candidates[0].content.parts.length > 0
+      ) {
         const jsonString = result.candidates[0].content.parts[0].text;
         const parsedJson = JSON.parse(jsonString);
 
@@ -1088,36 +1179,37 @@ useEffect(() => {
         setProjectDescription(parsedJson.projectDescription);
         setProblemSolved(parsedJson.problemSolved);
         setMyRole(parsedJson.myRole);
-        setKeyFeatures(parsedJson.keyFeatures.join(', ')); // Join array into comma-separated string
+        setKeyFeatures(parsedJson.keyFeatures.join(", ")); // Join array into comma-separated string
         setTechnologiesUsedDesc(parsedJson.technologiesUsedDesc);
         setChallengesSolutions(parsedJson.challengesSolutions);
         setLearnings(parsedJson.learnings);
         setFutureEnhancements(parsedJson.futureEnhancements);
-        showNotification('Project details generated successfully!', 'success');
+        showNotification("Project details generated successfully!", "success");
 
         // If auto-write code snippets is enabled, generate for existing code blocks
         if (enableCodeGemini) {
-          const codeBlocksToUpdate = contentBlocks.map((block, index) => ({ block, index })).filter(item => item.block.type === 'code');
+          const codeBlocksToUpdate = contentBlocks
+            .map((block, index) => ({ block, index }))
+            .filter((item) => item.block.type === "code");
           for (const item of codeBlocksToUpdate) {
             await generateCodeSnippetForBlock(item.index);
           }
         }
-
       } else {
-        setGeminiError('Failed to generate content. Please try again.');
-        showNotification('Failed to generate content.', 'error');
-        console.error('Gemini API response structure unexpected:', result);
+        setGeminiError("Failed to generate content. Please try again.");
+        showNotification("Failed to generate content.", "error");
+        console.error("Gemini API response structure unexpected:", result);
       }
     } catch (error) {
       setGeminiError(`Error generating content: ${error.message}`);
-      showNotification(`Error generating content: ${error.message}`, 'error');
-      console.error('Error calling Gemini API:', error);
+      showNotification(`Error generating content: ${error.message}`, "error");
+      console.error("Error calling Gemini API:", error);
     } finally {
       setIsLoadingGemini(false);
     }
   };
 
-   const customCssVars = `
+  const customCssVars = `
       :root {
         --primary-brand: ${primaryColor};
         --secondary-brand-color: ${secondaryColor};
@@ -1164,82 +1256,135 @@ useEffect(() => {
   // Function to generate the HTML content
   const generateHtml = () => {
     if (!validateForm()) {
-      showNotification('Please fix the validation errors before generating HTML.', 'error');
+      showNotification(
+        "Please fix the validation errors before generating HTML.",
+        "error"
+      );
       return;
     }
 
     const currentYear = new Date().getFullYear();
 
     // Convert comma-separated strings to list items
-    const keyFeaturesList = keyFeatures.split(',').map(item => item.trim()).filter(item => item !== '').map(item => `<li>${item}</li>`).join('\n');
-    const technologiesTagsList = technologiesTags.split(',').map(item => item.trim()).filter(item => item !== '').map(item => `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full dark:bg-blue-900 dark:text-blue-200">${item}</span>`).join('\n');
+    const keyFeaturesList = keyFeatures
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item !== "")
+      .map((item) => `<li>${item}</li>`)
+      .join("\n");
+    const technologiesTagsList = technologiesTags
+      .split(",")
+      .map((item) => item.trim())
+      .filter((item) => item !== "")
+      .map(
+        (item) =>
+          `<span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full dark:bg-blue-900 dark:text-blue-200">${item}</span>`
+      )
+      .join("\n");
 
     // Generate HTML for dynamic content blocks
-    const dynamicContentHtml = contentBlocks.map(block => {
-      if (block.type === 'text') {
-        return `<p>${block.content}</p>`;
-      } else if (block.type === 'image') {
-if (block.sourceType === 'url' && block.url && isValidUrl(block.url)) {
-    return `
+    const dynamicContentHtml = contentBlocks
+      .map((block) => {
+        if (block.type === "text") {
+          return `<p>${block.content}</p>`;
+        } else if (block.type === "image") {
+          if (
+            block.sourceType === "url" &&
+            block.url &&
+            isValidUrl(block.url)
+          ) {
+            return `
       <div class="mb-6">
-          <img src="${block.url}" alt="${block.alt || 'Project image'}" class="w-full h-auto rounded-lg shadow-lg">
-          ${block.caption ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>` : ''}
+          <img src="${block.url}" alt="${
+              block.alt || "Project image"
+            }" class="w-full h-auto rounded-lg shadow-lg">
+          ${
+            block.caption
+              ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>`
+              : ""
+          }
       </div>
     `;
-  } else if (block.sourceType === 'upload' && block.uploadedFile) {
-    return `
+          } else if (block.sourceType === "upload" && block.uploadedFile) {
+            return `
       <div class="mb-6">
-          <img src="assets/images/${block.uploadedFile.name}" alt="${block.alt || 'Project image'}" class="w-full h-auto rounded-lg shadow-lg">
-          ${block.caption ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>` : ''}
+          <img src="assets/images/${block.uploadedFile.name}" alt="${
+              block.alt || "Project image"
+            }" class="w-full h-auto rounded-lg shadow-lg">
+          ${
+            block.caption
+              ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>`
+              : ""
+          }
       </div>
     `;
-  }
-  return '';
-} else if (block.type === 'video') {
-  if (block.sourceType === 'youtube') {
-    const videoId = getYouTubeVideoId(block.url);
-    return videoId
-      ? `
+          }
+          return "";
+        } else if (block.type === "video") {
+          if (block.sourceType === "youtube") {
+            const videoId = getYouTubeVideoId(block.url);
+            return videoId
+              ? `
         <div class="mb-6 aspect-w-16 aspect-h-9">
             <iframe class="w-full h-auto rounded-lg shadow-lg" src="https://www.youtube.com/embed/${videoId}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-            ${block.caption ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>` : ''}
+            ${
+              block.caption
+                ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>`
+                : ""
+            }
         </div>
       `
-      : '';
-  } else if (block.sourceType === 'mp4' && block.url) {
-    return `
+              : "";
+          } else if (block.sourceType === "mp4" && block.url) {
+            return `
       <div class="mb-6">
-          <video controls class="w-full h-auto rounded-lg shadow-lg" src="${block.url}"></video>
-          ${block.caption ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>` : ''}
+          <video controls class="w-full h-auto rounded-lg shadow-lg" src="${
+            block.url
+          }"></video>
+          ${
+            block.caption
+              ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>`
+              : ""
+          }
       </div>
     `;
-  } else if (block.sourceType === 'upload' && block.uploadedFile) {
-    return `
+          } else if (block.sourceType === "upload" && block.uploadedFile) {
+            return `
       <div class="mb-6">
-          <video controls class="w-full h-auto rounded-lg shadow-lg" src="assets/videos/${block.uploadedFile.name}"></video>
-          ${block.caption ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>` : ''}
+          <video controls class="w-full h-auto rounded-lg shadow-lg" src="assets/videos/${
+            block.uploadedFile.name
+          }"></video>
+          ${
+            block.caption
+              ? `<p class="text-center text-gray-500 text-sm mt-3 dark:text-gray-400">${block.caption}</p>`
+              : ""
+          }
       </div>
     `;
-  }
-      } else if (block.type === 'code') {
-        return `
-          <h4 class="text-xl font-semibold border-b border-gray-200 pb-2 mt-6 mb-4 dark:border-gray-700">Code Snippet: ${block.description || 'Example Code'}</h4>
+          }
+        } else if (block.type === "code") {
+          return `
+          <h4 class="text-xl font-semibold border-b border-gray-200 pb-2 mt-6 mb-4 dark:border-gray-700">Code Snippet: ${
+            block.description || "Example Code"
+          }</h4>
           <div class="code-snippet-container">
-              <pre><code class="language-${block.language || 'plaintext'}">
+              <pre><code class="language-${block.language || "plaintext"}">
 ${block.code}
               </code></pre>
           </div>
-          ${block.description ? `<p class="text-gray-600 text-sm italic mt-2 dark:text-gray-400">${block.description}</p>` : ''}
+          ${
+            block.description
+              ? `<p class="text-gray-600 text-sm italic mt-2 dark:text-gray-400">${block.description}</p>`
+              : ""
+          }
         `;
-      }
-      return '';
-    }).join('\n');
-
- 
+        }
+        return "";
+      })
+      .join("\n");
 
     // Combine original style.css content with dynamic CSS variables
     const combinedStyleCssForPreview = `${styleCssContent}\n${customCssVars}`;
-
 
     const htmlContent = `<!DOCTYPE html>
 <html lang="en" class="dark">
@@ -1320,7 +1465,10 @@ ${block.code}
     onerror="this.onerror=null; this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22 fill=%22%234f46e5%22><rect width=%22100%22 height=%22100%22 fill=%22%23ffffff%22 /><text x=%2250%22 y=%2265%22 font-family=%22Poppins, sans-serif%22 font-size=%2260%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%234f46e5%22>M</text></svg>'; this.classList.add('skill-icon-placeholder');"
 >
                 <a href="index.html#hero" class="text-2xl font-poppins font-bold text-primary-brand hidden md:block">
-    ${authorName.split(' ')[0]} <span class="md:inline lg:block">${authorName.split(' ').slice(1).join(' ')}</span>
+    ${authorName.split(" ")[0]} <span class="md:inline lg:block">${authorName
+      .split(" ")
+      .slice(1)
+      .join(" ")}</span>
 </a>
 </div>
 
@@ -1380,13 +1528,41 @@ ${block.code}
                     ${projectDescription}
                 </p>
                 <ul>
-                    ${problemSolved ? `<li><strong>Problem Solved:</strong> ${problemSolved}</li>` : ''}
-                    ${myRole ? `<li><strong>My Role:</strong> ${myRole}</li>` : ''}
-                    ${keyFeaturesList ? `<li><strong>Key Features:</strong><ul>${keyFeaturesList}</ul></li>` : ''}
-                    ${technologiesUsedDesc ? `<li><strong>Technologies Used:</strong> ${technologiesUsedDesc}</li>` : ''}
-                    ${challengesSolutions ? `<li><strong>Challenges and Solutions:</strong> ${challengesSolutions}</li>` : ''}
-                    ${learnings ? `<li><strong>Learnings:</strong> ${learnings}</li>` : ''}
-                    ${futureEnhancements ? `<li><strong>Future Enhancements (Optional):</strong> ${futureEnhancements}</li>` : ''}
+                    ${
+                      problemSolved
+                        ? `<li><strong>Problem Solved:</strong> ${problemSolved}</li>`
+                        : ""
+                    }
+                    ${
+                      myRole
+                        ? `<li><strong>My Role:</strong> ${myRole}</li>`
+                        : ""
+                    }
+                    ${
+                      keyFeaturesList
+                        ? `<li><strong>Key Features:</strong><ul>${keyFeaturesList}</ul></li>`
+                        : ""
+                    }
+                    ${
+                      technologiesUsedDesc
+                        ? `<li><strong>Technologies Used:</strong> ${technologiesUsedDesc}</li>`
+                        : ""
+                    }
+                    ${
+                      challengesSolutions
+                        ? `<li><strong>Challenges and Solutions:</strong> ${challengesSolutions}</li>`
+                        : ""
+                    }
+                    ${
+                      learnings
+                        ? `<li><strong>Learnings:</strong> ${learnings}</li>`
+                        : ""
+                    }
+                    ${
+                      futureEnhancements
+                        ? `<li><strong>Future Enhancements (Optional):</strong> ${futureEnhancements}</li>`
+                        : ""
+                    }
                 </ul>
                 ${dynamicContentHtml}
             </div>
@@ -1420,22 +1596,22 @@ ${block.code}
 </body>
 </html>`;
     setGeneratedHtml(htmlContent);
-    showNotification('HTML generated successfully!', 'success');
+    showNotification("HTML generated successfully!", "success");
   };
 
   // Function to copy the generated HTML to clipboard
   const copyToClipboard = () => {
     if (htmlOutputRef.current) {
-      const textarea = document.createElement('textarea');
+      const textarea = document.createElement("textarea");
       textarea.value = generatedHtml;
       document.body.appendChild(textarea);
       textarea.select();
       try {
-        document.execCommand('copy');
-        showNotification('HTML code copied to clipboard!', 'success');
+        document.execCommand("copy");
+        showNotification("HTML code copied to clipboard!", "success");
       } catch (err) {
-        console.error('Failed to copy HTML: ', err);
-        showNotification('Failed to copy HTML. Please copy manually.', 'error');
+        console.error("Failed to copy HTML: ", err);
+        showNotification("Failed to copy HTML. Please copy manually.", "error");
       }
       document.body.removeChild(textarea);
     }
@@ -1443,31 +1619,73 @@ ${block.code}
 
   // Function to export project data to JSON
   const exportProjectData = () => {
-const data = {
-  projectName, projectSubtitle, projectDescription, projectUrl, liveDemoUrl, githubRepoUrl,
-  contentBlocks: contentBlocks.map(block => ({
-    ...block,
-    uploadedFile: block.uploadedFile ? block.uploadedFile.name : null // Store file name only
-  })),
-  problemSolved, myRole, keyFeatures, technologiesUsedDesc, challengesSolutions,
-  learnings, futureEnhancements, technologiesTags, authorName, linkedinUrl, ogImageUrl,
-  twitterImageUrl, faviconUrl, logoUrl, jobTitle, alumniOf, enableCodeGemini,
-  // Export color states
-  primaryColor, secondaryColor, flashColor,
-  bgColorLight, textColorLight, cardBgLight, sectionBgLight, borderColorLight, tagBgLight, tagTextLight, codeBgLight, codeTextLight, moonIconColorLight,
-  bgColorDark, textColorDark, cardBgDark, sectionBgDark, borderColorDark, secondaryColorDark, tagBgDark, tagTextDark, codeBgDark, codeTextDark, moonIconColorDark,
-};
+    const data = {
+      projectName,
+      projectSubtitle,
+      projectDescription,
+      projectUrl,
+      liveDemoUrl,
+      githubRepoUrl,
+      contentBlocks: contentBlocks.map((block) => ({
+        ...block,
+        uploadedFile: block.uploadedFile ? block.uploadedFile.name : null, // Store file name only
+      })),
+      problemSolved,
+      myRole,
+      keyFeatures,
+      technologiesUsedDesc,
+      challengesSolutions,
+      learnings,
+      futureEnhancements,
+      technologiesTags,
+      authorName,
+      linkedinUrl,
+      ogImageUrl,
+      twitterImageUrl,
+      faviconUrl,
+      logoUrl,
+      jobTitle,
+      alumniOf,
+      enableCodeGemini,
+      // Export color states
+      primaryColor,
+      secondaryColor,
+      flashColor,
+      bgColorLight,
+      textColorLight,
+      cardBgLight,
+      sectionBgLight,
+      borderColorLight,
+      tagBgLight,
+      tagTextLight,
+      codeBgLight,
+      codeTextLight,
+      moonIconColorLight,
+      bgColorDark,
+      textColorDark,
+      cardBgDark,
+      sectionBgDark,
+      borderColorDark,
+      secondaryColorDark,
+      tagBgDark,
+      tagTextDark,
+      codeBgDark,
+      codeTextDark,
+      moonIconColorDark,
+    };
     const jsonString = JSON.stringify(data, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
+    const blob = new Blob([jsonString], { type: "application/json" });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
-    a.download = `${projectName.toLowerCase().replace(/\s/g, '-')}-project-data.json`;
+    a.download = `${projectName
+      .toLowerCase()
+      .replace(/\s/g, "-")}-project-data.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
-    showNotification('Project data exported successfully!', 'success');
+    showNotification("Project data exported successfully!", "success");
   };
 
   // Function to import project data from JSON
@@ -1478,98 +1696,114 @@ const data = {
       reader.onload = (e) => {
         try {
           const importedData = JSON.parse(e.target.result);
-          setProjectName(importedData.projectName || '');
-          setProjectSubtitle(importedData.projectSubtitle || '');
-          setProjectDescription(importedData.projectDescription || '');
-          setProjectUrl(importedData.projectUrl || '');
-          setLiveDemoUrl(importedData.liveDemoUrl || '');
-          setGithubRepoUrl(importedData.githubRepoUrl || '');
-          setContentBlocks(importedData.contentBlocks?.map(block => ({
-          ...block,
-          uploadedFile: null // Cannot restore actual file, reset to null
-          }) || []));
-          setProblemSolved(importedData.problemSolved || '');
-          setMyRole(importedData.myRole || '');
-          setKeyFeatures(importedData.keyFeatures || '');
-          setTechnologiesUsedDesc(importedData.technologiesUsedDesc || '');
-          setChallengesSolutions(importedData.challengesSolutions || '');
-          setLearnings(importedData.learnings || '');
-          setFutureEnhancements(importedData.futureEnhancements || '');
-          setTechnologiesTags(importedData.technologiesTags || '');
-          setAuthorName(importedData.authorName || '');
-          setLinkedinUrl(importedData.linkedinUrl || '');
-          setOgImageUrl(importedData.ogImageUrl || '');
-          setTwitterImageUrl(importedData.twitterImageUrl || '');
-          setFaviconUrl(importedData.faviconUrl || '');
-          setLogoUrl(importedData.logoUrl || '');
-          setJobTitle(importedData.jobTitle || '');
-          setAlumniOf(importedData.alumniOf || '');
-          setEnableCodeGemini(importedData.enableCodeGemini !== undefined ? importedData.enableCodeGemini : false);
+          setProjectName(importedData.projectName || "");
+          setProjectSubtitle(importedData.projectSubtitle || "");
+          setProjectDescription(importedData.projectDescription || "");
+          setProjectUrl(importedData.projectUrl || "");
+          setLiveDemoUrl(importedData.liveDemoUrl || "");
+          setGithubRepoUrl(importedData.githubRepoUrl || "");
+          setContentBlocks(
+            importedData.contentBlocks?.map(
+              (block) =>
+                ({
+                  ...block,
+                  uploadedFile: null, // Cannot restore actual file, reset to null
+                } || [])
+            )
+          );
+          setProblemSolved(importedData.problemSolved || "");
+          setMyRole(importedData.myRole || "");
+          setKeyFeatures(importedData.keyFeatures || "");
+          setTechnologiesUsedDesc(importedData.technologiesUsedDesc || "");
+          setChallengesSolutions(importedData.challengesSolutions || "");
+          setLearnings(importedData.learnings || "");
+          setFutureEnhancements(importedData.futureEnhancements || "");
+          setTechnologiesTags(importedData.technologiesTags || "");
+          setAuthorName(importedData.authorName || "");
+          setLinkedinUrl(importedData.linkedinUrl || "");
+          setOgImageUrl(importedData.ogImageUrl || "");
+          setTwitterImageUrl(importedData.twitterImageUrl || "");
+          setFaviconUrl(importedData.faviconUrl || "");
+          setLogoUrl(importedData.logoUrl || "");
+          setJobTitle(importedData.jobTitle || "");
+          setAlumniOf(importedData.alumniOf || "");
+          setEnableCodeGemini(
+            importedData.enableCodeGemini !== undefined
+              ? importedData.enableCodeGemini
+              : false
+          );
 
           // Import color states
-          setPrimaryColor(importedData.primaryColor || '#4f46e5');
-          setSecondaryColor(importedData.secondaryColor || '#14b8a6');
-          setFlashColor(importedData.flashColor || '#dc2626');
-          setBgColorLight(importedData.bgColorLight || '#f9fafb');
-          setTextColorLight(importedData.textColorLight || '#1e293b');
-          setCardBgLight(importedData.cardBgLight || '#ffffff');
-          setSectionBgLight(importedData.sectionBgLight || '#f1f5f9');
-          setBorderColorLight(importedData.borderColorLight || '#e2e8f0');
-          setTagBgLight(importedData.tagBgLight || '#e2e8f0');
-          setTagTextLight(importedData.tagTextLight || '#1e293b');
-          setCodeBgLight(importedData.codeBgLight || '#f3f4f6');
-          setCodeTextLight(importedData.codeTextLight || '#1f2937');
-          setMoonIconColorLight(importedData.moonIconColorLight || '#1e293b');
-          setBgColorDark(importedData.bgColorDark || '#0f172a');
-          setTextColorDark(importedData.textColorDark || '#e2e8f0');
-          setCardBgDark(importedData.cardBgDark || '#1e293b');
-          setSectionBgDark(importedData.sectionBgDark || '#1e293b');
-          setBorderColorDark(importedData.borderColorDark || '#475569');
-          setSecondaryColorDark(importedData.secondaryColorDark || '#2dd4bf');
-          setTagBgDark(importedData.tagBgDark || '#475569');
-          setTagTextDark(importedData.tagTextDark || '#e2e8f0');
-          setCodeBgDark(importedData.codeBgDark || '#1f2937');
-          setCodeTextDark(importedData.codeTextDark || '#f9fafb');
-          setMoonIconColorDark(importedData.moonIconColorDark || '#e2e8f0');
+          setPrimaryColor(importedData.primaryColor || "#4f46e5");
+          setSecondaryColor(importedData.secondaryColor || "#14b8a6");
+          setFlashColor(importedData.flashColor || "#dc2626");
+          setBgColorLight(importedData.bgColorLight || "#f9fafb");
+          setTextColorLight(importedData.textColorLight || "#1e293b");
+          setCardBgLight(importedData.cardBgLight || "#ffffff");
+          setSectionBgLight(importedData.sectionBgLight || "#f1f5f9");
+          setBorderColorLight(importedData.borderColorLight || "#e2e8f0");
+          setTagBgLight(importedData.tagBgLight || "#e2e8f0");
+          setTagTextLight(importedData.tagTextLight || "#1e293b");
+          setCodeBgLight(importedData.codeBgLight || "#f3f4f6");
+          setCodeTextLight(importedData.codeTextLight || "#1f2937");
+          setMoonIconColorLight(importedData.moonIconColorLight || "#1e293b");
+          setBgColorDark(importedData.bgColorDark || "#0f172a");
+          setTextColorDark(importedData.textColorDark || "#e2e8f0");
+          setCardBgDark(importedData.cardBgDark || "#1e293b");
+          setSectionBgDark(importedData.sectionBgDark || "#1e293b");
+          setBorderColorDark(importedData.borderColorDark || "#475569");
+          setSecondaryColorDark(importedData.secondaryColorDark || "#2dd4bf");
+          setTagBgDark(importedData.tagBgDark || "#475569");
+          setTagTextDark(importedData.tagTextDark || "#e2e8f0");
+          setCodeBgDark(importedData.codeBgDark || "#1f2937");
+          setCodeTextDark(importedData.codeTextDark || "#f9fafb");
+          setMoonIconColorDark(importedData.moonIconColorDark || "#e2e8f0");
 
-
-          showNotification('Project data imported successfully!', 'success');
+          showNotification("Project data imported successfully!", "success");
         } catch (error) {
-          console.error('Error parsing JSON:', error);
-          showNotification('Failed to import data: Invalid JSON file.', 'error');
+          console.error("Error parsing JSON:", error);
+          showNotification(
+            "Failed to import data: Invalid JSON file.",
+            "error"
+          );
         }
       };
       reader.readAsText(file);
     }
   };
-const downloadZip = async () => {
-  if (!generatedHtml) {
-    showNotification('Please generate HTML first.', 'error');
-    return;
-  }
+  const downloadZip = async () => {
+    if (!generatedHtml) {
+      showNotification("Please generate HTML first.", "error");
+      return;
+    }
 
-  // Check for JSZip and saveAs availability globally (via CDN)
-  if (!JSZip || !saveAs) {
-    showNotification('JSZip or FileSaver.js are not loaded. Please ensure CDN scripts are present in the generated HTML for ZIP download.', 'error');
-    return;
-  }
+    // Check for JSZip and saveAs availability globally (via CDN)
+    if (!JSZip || !saveAs) {
+      showNotification(
+        "JSZip or FileSaver.js are not loaded. Please ensure CDN scripts are present in the generated HTML for ZIP download.",
+        "error"
+      );
+      return;
+    }
 
-  const zip = new JSZip(); // Use window.JSZip
-  zip.file("index.html", generatedHtml);
+    const zip = new JSZip(); // Use window.JSZip
+    zip.file("index.html", generatedHtml);
 
-  // Add script.js to assets/js folder
-  const jsFolder = zip.folder("assets/js");
-  jsFolder.file("script.js", scriptJsContent);
+    // Add script.js to assets/js folder
+    const jsFolder = zip.folder("assets/js");
+    jsFolder.file("script.js", scriptJsContent);
 
-  // Combine original style.css content with dynamic CSS variables
-  const combinedStyleCssForZip = `${styleCssContent}\n${customCssVars}`;
-  // Add combined style.css to assets/css folder
-  const cssFolder = zip.folder("assets/css");
-  cssFolder.file("style.css", combinedStyleCssForZip);
-  
-  // Add code-snippets.css (assuming it's static and needed)
-  // For demonstration, let's include a dummy or placeholder if it's not provided
-  cssFolder.file("code-snippets.css", `/* Basic styles for code snippets */
+    // Combine original style.css content with dynamic CSS variables
+    const combinedStyleCssForZip = `${styleCssContent}\n${customCssVars}`;
+    // Add combined style.css to assets/css folder
+    const cssFolder = zip.folder("assets/css");
+    cssFolder.file("style.css", combinedStyleCssForZip);
+
+    // Add code-snippets.css (assuming it's static and needed)
+    // For demonstration, let's include a dummy or placeholder if it's not provided
+    cssFolder.file(
+      "code-snippets.css",
+      `/* Basic styles for code snippets */
 .code-snippet-container {
     background-color: var(--code-bg);
     color: var(--code-text);
@@ -1585,34 +1819,45 @@ const downloadZip = async () => {
 .code-snippet-container code {
     background-color: transparent;
     color: inherit;
-}`);
+}`
+    );
 
-
-  // Add uploaded videos
-  const videoFolder = zip.folder("assets/videos");
-  for (const block of contentBlocks) {
-    if (block.type === 'video' && block.sourceType === 'upload' && block.uploadedFile) {
-      videoFolder.file(block.uploadedFile.name, block.uploadedFile);
+    // Add uploaded videos
+    const videoFolder = zip.folder("assets/videos");
+    for (const block of contentBlocks) {
+      if (
+        block.type === "video" &&
+        block.sourceType === "upload" &&
+        block.uploadedFile
+      ) {
+        videoFolder.file(block.uploadedFile.name, block.uploadedFile);
+      }
     }
-  }
 
-  // Add uploaded images
-  const imageFolder = zip.folder("assets/images");
-  for (const block of contentBlocks) {
-    if (block.type === 'image' && block.sourceType === 'upload' && block.uploadedFile) {
-      imageFolder.file(block.uploadedFile.name, block.uploadedFile);
+    // Add uploaded images
+    const imageFolder = zip.folder("assets/images");
+    for (const block of contentBlocks) {
+      if (
+        block.type === "image" &&
+        block.sourceType === "upload" &&
+        block.uploadedFile
+      ) {
+        imageFolder.file(block.uploadedFile.name, block.uploadedFile);
+      }
     }
-  }
 
-  try {
-    const blob = await zip.generateAsync({ type: 'blob' });
-    saveAs(blob, `${projectName.toLowerCase().replace(/\s/g, '-')}-export.zip`); // Use window.saveAs
-    showNotification('ZIP file exported successfully!', 'success');
-  } catch (error) {
-    console.error('Error generating ZIP:', error);
-    showNotification('Failed to export ZIP file.', 'error');
-  }
-};
+    try {
+      const blob = await zip.generateAsync({ type: "blob" });
+      saveAs(
+        blob,
+        `${projectName.toLowerCase().replace(/\s/g, "-")}-export.zip`
+      ); // Use window.saveAs
+      showNotification("ZIP file exported successfully!", "success");
+    } catch (error) {
+      console.error("Error generating ZIP:", error);
+      showNotification("Failed to export ZIP file.", "error");
+    }
+  };
 
   // Effect to handle delayed live preview update
   useEffect(() => {
@@ -1624,7 +1869,7 @@ const downloadZip = async () => {
         setIsUpdatingPreview(false);
       }, 1000); // 1-second delay
     } else if (!showPreviewPanel) {
-      setLivePreviewHtml(''); // Clear preview when panel is hidden
+      setLivePreviewHtml(""); // Clear preview when panel is hidden
     }
     return () => clearTimeout(timer); // Cleanup function to clear timeout if generatedHtml changes or panel is hidden
   }, [generatedHtml, showPreviewPanel]);
@@ -1635,12 +1880,17 @@ const downloadZip = async () => {
       generateHtml();
     }
   }, [showPreviewPanel, generateHtml]); // Added handleGenerateHtml to dependency array for clarity
-  
-  
+
   return (
     <div className="bg-gray-100 flex h-screen w-full p-4 text-gray-900 dark:text-gray-100 dark:bg-gray-900 dark ${showPreviewPanel ? 'overflow-hidden' : 'overflow-auto'}">
       {/* Main Content (Input Form) */}
-      <div className={`${showPreviewPanel ? 'overflow-y-scroll h-full' : 'w-full max-w'} bg-gray dark:bg-gray-800 p-8 rounded-xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${showPreviewPanel ? 'mr-4' : ''}`}>
+      <div
+        className={`${
+          showPreviewPanel ? "overflow-y-scroll h-full" : "w-full max-w"
+        } bg-gray dark:bg-gray-800 p-8 rounded-xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${
+          showPreviewPanel ? "mr-4" : ""
+        }`}
+      >
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
           Project Page HTML Generator
         </h1>
@@ -1650,9 +1900,9 @@ const downloadZip = async () => {
           onClick={() => setShowPreviewPanel(!showPreviewPanel)}
           className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 mb-6"
         >
-          {showPreviewPanel ? 'Hide Live Preview' : 'Show Live Preview'}
+          {showPreviewPanel ? "Hide Live Preview" : "Show Live Preview"}
         </button>
-        
+
         {/* Save/Load Buttons */}
         <div className="absolute top-4 left-4 flex space-x-2 z-50">
           <button
@@ -1660,8 +1910,19 @@ const downloadZip = async () => {
             className="p-2 rounded-full bg-blue-600 text-white shadow-lg hover:bg-blue-700 transition-all duration-300"
             title="Export Project Data"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"
+              />
             </svg>
           </button>
           <input
@@ -1676,31 +1937,57 @@ const downloadZip = async () => {
             className="p-2 rounded-full bg-green-600 text-white shadow-lg hover:bg-green-700 transition-all duration-300"
             title="Import Project Data"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" />
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth="2"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"
+              />
             </svg>
           </button>
         </div>
-{/* hi */}
+        {/* hi */}
         {/* Main Project Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label htmlFor="projectName" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="projectName"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Project Name: <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="projectName"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.projectName ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.projectName ? "border-red-500" : ""
+              }`}
               value={projectName}
-              onChange={(e) => { setProjectName(e.target.value); setValidationErrors(prev => ({ ...prev, projectName: '' })); }}
+              onChange={(e) => {
+                setProjectName(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, projectName: "" }));
+              }}
               placeholder="e.g., Real-time Chat Application"
               required
             />
-            {validationErrors.projectName && <p className="text-red-500 text-xs italic mt-1">{validationErrors.projectName}</p>}
+            {validationErrors.projectName && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.projectName}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="projectSubtitle" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="projectSubtitle"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Project Subtitle/Tagline:
             </label>
             <input
@@ -1715,76 +2002,127 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="projectDescription" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
-            Project Overview Description (Initial Paragraph): <span className="text-red-500">*</span>
+          <label
+            htmlFor="projectDescription"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
+            Project Overview Description (Initial Paragraph):{" "}
+            <span className="text-red-500">*</span>
           </label>
           <DynamicTextarea
             id="projectDescription"
             value={projectDescription}
-            onChange={(e) => { setProjectDescription(e.target.value); setValidationErrors(prev => ({ ...prev, projectDescription: '' })); }}
+            onChange={(e) => {
+              setProjectDescription(e.target.value);
+              setValidationErrors((prev) => ({
+                ...prev,
+                projectDescription: "",
+              }));
+            }}
             placeholder="This project involved the design and development of a real-time chat application..."
             required
             maxRows={200} // Changed from 10 to 20
           />
-          {validationErrors.projectDescription && <p className="text-red-500 text-xs italic mt-1">{validationErrors.projectDescription}</p>}
+          {validationErrors.projectDescription && (
+            <p className="text-red-500 text-xs italic mt-1">
+              {validationErrors.projectDescription}
+            </p>
+          )}
           {/* Gemini API Key Input */}
-        <div className="bg-dark:text-gray-300 border dark:border-black-600 p-4 rounded-lg flex flex-col space-y-4">
-          <p className="font-semibold text-lg">
-            🔑 Gemini API Key (Your Key)(Optional)
-          </p>
-          <p className="text-sm">
-            Enter your own Gemini API key to use the generation features. This helps keep the app free and ensures you manage your own API usage. Your key is saved locally in your browser for convenience and is NOT sent to any server.
-            <br />
-            Get your key from: <a href="https://aistudio.google.com/app/apikey" target="_blank" rel="noopener noreferrer" className="text-blue-600 hover:underline">Google AI Studio</a>
-          </p>
-          <input
-            type="password" // Use type="password" for better security in UI
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black-500 text-white dark:bg-gray-700 dark:border-gray-600"
-            placeholder="Enter your Gemini API key here"
-            value={userApiKey}
-            onChange={(e) => setUserApiKey(e.target.value)}
-          />
-        </div>
+          <div className="bg-dark:text-gray-300 border dark:border-black-600 p-4 rounded-lg flex flex-col space-y-4">
+            <p className="font-semibold text-lg">
+              🔑 Gemini API Key (Your Key)(Optional)
+            </p>
+            <p className="text-sm">
+              Enter your own Gemini API key to use the generation features. This
+              helps keep the app free and ensures you manage your own API usage.
+              Your key is saved locally in your browser for convenience and is
+              NOT sent to any server.
+              <br />
+              Get your key from:{" "}
+              <a
+                href="https://aistudio.google.com/app/apikey"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-600 hover:underline"
+              >
+                Google AI Studio
+              </a>
+            </p>
+            <input
+              type="password" // Use type="password" for better security in UI
+              className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black-500 text-white dark:bg-gray-700 dark:border-gray-600"
+              placeholder="Enter your Gemini API key here"
+              value={userApiKey}
+              onChange={(e) => setUserApiKey(e.target.value)}
+            />
+          </div>
           <button
             onClick={generateProjectDetailsWithGemini}
             disabled={isLoadingGemini}
             className="mt-3 w-full bg-indigo-500 hover:bg-indigo-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isLoadingGemini ? 'Generating...' : 'Generate with ✨Gemini'}
+            {isLoadingGemini ? "Generating..." : "Generate with ✨Gemini"}
           </button>
-          {geminiError && <p className="text-red-500 text-sm mt-2">{geminiError}</p>}
+          {geminiError && (
+            <p className="text-red-500 text-sm mt-2">{geminiError}</p>
+          )}
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label htmlFor="liveDemoUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="liveDemoUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Live Demo URL: <span className="text-red-500">*</span>
             </label>
             <input
               type="url"
               id="liveDemoUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.liveDemoUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.liveDemoUrl ? "border-red-500" : ""
+              }`}
               value={liveDemoUrl}
-              onChange={(e) => { setLiveDemoUrl(e.target.value); setValidationErrors(prev => ({ ...prev, liveDemoUrl: '' })); }}
+              onChange={(e) => {
+                setLiveDemoUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, liveDemoUrl: "" }));
+              }}
               placeholder="https://example.com/chat-app-demo"
               required
             />
-            {validationErrors.liveDemoUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.liveDemoUrl}</p>}
+            {validationErrors.liveDemoUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.liveDemoUrl}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="githubRepoUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="githubRepoUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               GitHub Repo URL: <span className="text-red-500">*</span>
             </label>
             <input
               type="url"
               id="githubRepoUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.githubRepoUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.githubRepoUrl ? "border-red-500" : ""
+              }`}
               value={githubRepoUrl}
-              onChange={(e) => { setGithubRepoUrl(e.target.value); setValidationErrors(prev => ({ ...prev, githubRepoUrl: '' })); }}
+              onChange={(e) => {
+                setGithubRepoUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, githubRepoUrl: "" }));
+              }}
               placeholder="https://github.com/your-username/your-project"
               required
             />
-            {validationErrors.githubRepoUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.githubRepoUrl}</p>}
+            {validationErrors.githubRepoUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.githubRepoUrl}
+              </p>
+            )}
           </div>
         </div>
 
@@ -1797,141 +2135,414 @@ const downloadZip = async () => {
             checked={enableCodeGemini}
             onChange={(e) => setEnableCodeGemini(e.target.checked)}
           />
-          <label htmlFor="enableCodeGemini" className="text-gray-700 dark:text-gray-300 font-bold">
+          <label
+            htmlFor="enableCodeGemini"
+            className="text-gray-700 dark:text-gray-300 font-bold"
+          >
             Auto-write Code Snippets by Gemini
           </label>
         </div>
 
         {/* Theme Color Customization */}
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Theme Color Customization</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">
+          Theme Color Customization
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div className="col-span-2">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">General Colors:</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2">
+              General Colors:
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="primaryColor" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                <label
+                  htmlFor="primaryColor"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
                   Primary Brand Color:
                 </label>
-                <input type="color" id="primaryColor" className="w-full h-10 rounded-lg cursor-pointer" value={primaryColor} onChange={(e) => setPrimaryColor(e.target.value)} />
+                <input
+                  type="color"
+                  id="primaryColor"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={primaryColor}
+                  onChange={(e) => setPrimaryColor(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="secondaryColor" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                <label
+                  htmlFor="secondaryColor"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
                   Secondary Brand Color:
                 </label>
-                <input type="color" id="secondaryColor" className="w-full h-10 rounded-lg cursor-pointer" value={secondaryColor} onChange={(e) => setSecondaryColor(e.target.value)} />
+                <input
+                  type="color"
+                  id="secondaryColor"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={secondaryColor}
+                  onChange={(e) => setSecondaryColor(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="flashColor" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+                <label
+                  htmlFor="flashColor"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
                   Flash/Accent Color:
                 </label>
-                <input type="color" id="flashColor" className="w-full h-10 rounded-lg cursor-pointer" value={flashColor} onChange={(e) => setFlashColor(e.target.value)} />
+                <input
+                  type="color"
+                  id="flashColor"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={flashColor}
+                  onChange={(e) => setFlashColor(e.target.value)}
+                />
               </div>
             </div>
           </div>
 
           <div className="col-span-2">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 mt-4">Light Mode Colors:</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 mt-4">
+              Light Mode Colors:
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="bgColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Body Background:</label>
-                <input type="color" id="bgColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={bgColorLight} onChange={(e) => setBgColorLight(e.target.value)} />
+                <label
+                  htmlFor="bgColorLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Body Background:
+                </label>
+                <input
+                  type="color"
+                  id="bgColorLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={bgColorLight}
+                  onChange={(e) => setBgColorLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="textColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Default Text:</label>
-                <input type="color" id="textColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={textColorLight} onChange={(e) => setTextColorLight(e.target.value)} />
+                <label
+                  htmlFor="textColorLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Default Text:
+                </label>
+                <input
+                  type="color"
+                  id="textColorLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={textColorLight}
+                  onChange={(e) => setTextColorLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="cardBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Card Background:</label>
-                <input type="color" id="cardBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={cardBgLight} onChange={(e) => setCardBgLight(e.target.value)} />
+                <label
+                  htmlFor="cardBgLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Card Background:
+                </label>
+                <input
+                  type="color"
+                  id="cardBgLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={cardBgLight}
+                  onChange={(e) => setCardBgLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="sectionBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Section Background:</label>
-                <input type="color" id="sectionBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={sectionBgLight} onChange={(e) => setSectionBgLight(e.target.value)} />
+                <label
+                  htmlFor="sectionBgLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Section Background:
+                </label>
+                <input
+                  type="color"
+                  id="sectionBgLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={sectionBgLight}
+                  onChange={(e) => setSectionBgLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="borderColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Border Color:</label>
-                <input type="color" id="borderColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={borderColorLight} onChange={(e) => setBorderColorLight(e.target.value)} />
+                <label
+                  htmlFor="borderColorLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Border Color:
+                </label>
+                <input
+                  type="color"
+                  id="borderColorLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={borderColorLight}
+                  onChange={(e) => setBorderColorLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="tagBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Background:</label>
-                <input type="color" id="tagBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={tagBgLight} onChange={(e) => setTagBgLight(e.target.value)} />
+                <label
+                  htmlFor="tagBgLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Tag Background:
+                </label>
+                <input
+                  type="color"
+                  id="tagBgLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={tagBgLight}
+                  onChange={(e) => setTagBgLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="tagTextLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Text:</label>
-                <input type="color" id="tagTextLight" className="w-full h-10 rounded-lg cursor-pointer" value={tagTextLight} onChange={(e) => setTagTextLight(e.target.value)} />
+                <label
+                  htmlFor="tagTextLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Tag Text:
+                </label>
+                <input
+                  type="color"
+                  id="tagTextLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={tagTextLight}
+                  onChange={(e) => setTagTextLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="codeBgLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Background:</label>
-                <input type="color" id="codeBgLight" className="w-full h-10 rounded-lg cursor-pointer" value={codeBgLight} onChange={(e) => setCodeBgLight(e.target.value)} />
+                <label
+                  htmlFor="codeBgLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Code Background:
+                </label>
+                <input
+                  type="color"
+                  id="codeBgLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={codeBgLight}
+                  onChange={(e) => setCodeBgLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="codeTextLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Text:</label>
-                <input type="color" id="codeTextLight" className="w-full h-10 rounded-lg cursor-pointer" value={codeTextLight} onChange={(e) => setCodeTextLight(e.target.value)} />
+                <label
+                  htmlFor="codeTextLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Code Text:
+                </label>
+                <input
+                  type="color"
+                  id="codeTextLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={codeTextLight}
+                  onChange={(e) => setCodeTextLight(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="moonIconColorLight" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Moon Icon (Light Mode):</label>
-                <input type="color" id="moonIconColorLight" className="w-full h-10 rounded-lg cursor-pointer" value={moonIconColorLight} onChange={(e) => setMoonIconColorLight(e.target.value)} />
+                <label
+                  htmlFor="moonIconColorLight"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Moon Icon (Light Mode):
+                </label>
+                <input
+                  type="color"
+                  id="moonIconColorLight"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={moonIconColorLight}
+                  onChange={(e) => setMoonIconColorLight(e.target.value)}
+                />
               </div>
             </div>
           </div>
 
           <div className="col-span-2">
-            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 mt-4">Dark Mode Colors:</h3>
+            <h3 className="text-xl font-semibold text-gray-800 dark:text-gray-100 mb-2 mt-4">
+              Dark Mode Colors:
+            </h3>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
               <div>
-                <label htmlFor="bgColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Body Background:</label>
-                <input type="color" id="bgColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={bgColorDark} onChange={(e) => setBgColorDark(e.target.value)} />
+                <label
+                  htmlFor="bgColorDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Body Background:
+                </label>
+                <input
+                  type="color"
+                  id="bgColorDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={bgColorDark}
+                  onChange={(e) => setBgColorDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="textColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Default Text:</label>
-                <input type="color" id="textColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={textColorDark} onChange={(e) => setTextColorDark(e.target.value)} />
+                <label
+                  htmlFor="textColorDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Default Text:
+                </label>
+                <input
+                  type="color"
+                  id="textColorDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={textColorDark}
+                  onChange={(e) => setTextColorDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="cardBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Card Background:</label>
-                <input type="color" id="cardBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={cardBgDark} onChange={(e) => setCardBgDark(e.target.value)} />
+                <label
+                  htmlFor="cardBgDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Card Background:
+                </label>
+                <input
+                  type="color"
+                  id="cardBgDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={cardBgDark}
+                  onChange={(e) => setCardBgDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="sectionBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Section Background:</label>
-                <input type="color" id="sectionBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={sectionBgDark} onChange={(e) => setSectionBgDark(e.target.value)} />
+                <label
+                  htmlFor="sectionBgDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Section Background:
+                </label>
+                <input
+                  type="color"
+                  id="sectionBgDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={sectionBgDark}
+                  onChange={(e) => setSectionBgDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="borderColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Border Color:</label>
-                <input type="color" id="borderColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={borderColorDark} onChange={(e) => setBorderColorDark(e.target.value)} />
+                <label
+                  htmlFor="borderColorDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Border Color:
+                </label>
+                <input
+                  type="color"
+                  id="borderColorDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={borderColorDark}
+                  onChange={(e) => setBorderColorDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="secondaryColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Secondary Brand Color (Dark):</label>
-                <input type="color" id="secondaryColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={secondaryColorDark} onChange={(e) => setSecondaryColorDark(e.target.value)} />
+                <label
+                  htmlFor="secondaryColorDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Secondary Brand Color (Dark):
+                </label>
+                <input
+                  type="color"
+                  id="secondaryColorDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={secondaryColorDark}
+                  onChange={(e) => setSecondaryColorDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="tagBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Background:</label>
-                <input type="color" id="tagBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={tagBgDark} onChange={(e) => setTagBgDark(e.target.value)} />
+                <label
+                  htmlFor="tagBgDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Tag Background:
+                </label>
+                <input
+                  type="color"
+                  id="tagBgDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={tagBgDark}
+                  onChange={(e) => setTagBgDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="tagTextDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Tag Text:</label>
-                <input type="color" id="tagTextDark" className="w-full h-10 rounded-lg cursor-pointer" value={tagTextDark} onChange={(e) => setTagTextDark(e.target.value)} />
+                <label
+                  htmlFor="tagTextDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Tag Text:
+                </label>
+                <input
+                  type="color"
+                  id="tagTextDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={tagTextDark}
+                  onChange={(e) => setTagTextDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="codeBgDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Background:</label>
-                <input type="color" id="codeBgDark" className="w-full h-10 rounded-lg cursor-pointer" value={codeBgDark} onChange={(e) => setCodeBgDark(e.target.value)} />
+                <label
+                  htmlFor="codeBgDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Code Background:
+                </label>
+                <input
+                  type="color"
+                  id="codeBgDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={codeBgDark}
+                  onChange={(e) => setCodeBgDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="codeTextDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Code Text:</label>
-                <input type="color" id="codeTextDark" className="w-full h-10 rounded-lg cursor-pointer" value={codeTextDark} onChange={(e) => setCodeTextDark(e.target.value)} />
+                <label
+                  htmlFor="codeTextDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Code Text:
+                </label>
+                <input
+                  type="color"
+                  id="codeTextDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={codeTextDark}
+                  onChange={(e) => setCodeTextDark(e.target.value)}
+                />
               </div>
               <div>
-                <label htmlFor="moonIconColorDark" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">Moon Icon (Dark Mode):</label>
-                <input type="color" id="moonIconColorDark" className="w-full h-10 rounded-lg cursor-pointer" value={moonIconColorDark} onChange={(e) => setMoonIconColorDark(e.target.value)} />
+                <label
+                  htmlFor="moonIconColorDark"
+                  className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+                >
+                  Moon Icon (Dark Mode):
+                </label>
+                <input
+                  type="color"
+                  id="moonIconColorDark"
+                  className="w-full h-10 rounded-lg cursor-pointer"
+                  value={moonIconColorDark}
+                  onChange={(e) => setMoonIconColorDark(e.target.value)}
+                />
               </div>
             </div>
           </div>
         </div>
 
-
         {/* Detailed Project Aspects */}
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Detailed Project Aspects</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">
+          Detailed Project Aspects
+        </h2>
 
         <div className="mb-6">
-          <label htmlFor="problemSolved" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="problemSolved"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Problem Solved:
           </label>
           <DynamicTextarea
@@ -1944,7 +2555,10 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="myRole" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="myRole"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             My Role:
           </label>
           <DynamicTextarea
@@ -1957,7 +2571,10 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="keyFeatures" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="keyFeatures"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Key Features (Comma Separated):
           </label>
           <DynamicTextarea
@@ -1970,7 +2587,10 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="technologiesUsedDesc" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="technologiesUsedDesc"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Technologies Used (in Description):
           </label>
           <DynamicTextarea
@@ -1983,7 +2603,10 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="challengesSolutions" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="challengesSolutions"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Challenges and Solutions:
           </label>
           <DynamicTextarea
@@ -1996,7 +2619,10 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="learnings" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="learnings"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Learnings:
           </label>
           <DynamicTextarea
@@ -2009,7 +2635,10 @@ const downloadZip = async () => {
         </div>
 
         <div className="mb-6">
-          <label htmlFor="futureEnhancements" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="futureEnhancements"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Future Enhancements (Optional):
           </label>
           <DynamicTextarea
@@ -2022,32 +2651,34 @@ const downloadZip = async () => {
         </div>
 
         {/* Dynamic Content Builder */}
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Dynamic Content Blocks (within Detailed Description)</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">
+          Dynamic Content Blocks (within Detailed Description)
+        </h2>
         <div className="flex flex-wrap gap-2 mb-6">
           <button
             type="button"
-            onClick={() => addContentBlock('text')}
+            onClick={() => addContentBlock("text")}
             className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
           >
             Add Text Block
           </button>
           <button
             type="button"
-            onClick={() => addContentBlock('image')}
+            onClick={() => addContentBlock("image")}
             className="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
           >
             Add Image Block
           </button>
           <button
             type="button"
-            onClick={() => addContentBlock('video')}
+            onClick={() => addContentBlock("video")}
             className="bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
           >
             Add Video Block
           </button>
           <button
             type="button"
-            onClick={() => addContentBlock('code')}
+            onClick={() => addContentBlock("code")}
             className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
           >
             Add Code Snippet
@@ -2055,15 +2686,19 @@ const downloadZip = async () => {
         </div>
 
         {contentBlocks.map((block, index) => (
-          <div key={block.id} 
-          ref={index === contentBlocks.length - 1 ? lastBlockRef : null}
-          className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-inner mb-4 border border-gray-200 dark:border-gray-600">
+          <div
+            key={block.id}
+            ref={index === contentBlocks.length - 1 ? lastBlockRef : null}
+            className="bg-gray-100 dark:bg-gray-700 p-4 rounded-lg shadow-inner mb-4 border border-gray-200 dark:border-gray-600"
+          >
             <div className="flex justify-between items-center mb-3">
-              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 capitalize">{block.type} Block {index + 1}</h3>
+              <h3 className="text-lg font-semibold text-gray-800 dark:text-gray-100 capitalize">
+                {block.type} Block {index + 1}
+              </h3>
               <div className="flex space-x-2">
                 <button
                   type="button"
-                  onClick={() => moveContentBlock(index, 'up')}
+                  onClick={() => moveContentBlock(index, "up")}
                   disabled={index === 0}
                   className="p-1 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 disabled:opacity-50"
                   title="Move Up"
@@ -2072,7 +2707,7 @@ const downloadZip = async () => {
                 </button>
                 <button
                   type="button"
-                  onClick={() => moveContentBlock(index, 'down')}
+                  onClick={() => moveContentBlock(index, "down")}
                   disabled={index === contentBlocks.length - 1}
                   className="p-1 rounded-full bg-gray-300 dark:bg-gray-600 text-gray-800 dark:text-gray-200 hover:bg-gray-400 dark:hover:bg-gray-500 disabled:opacity-50"
                   title="Move Down"
@@ -2090,270 +2725,384 @@ const downloadZip = async () => {
               </div>
             </div>
 
-            {block.type === 'text' && (
+            {block.type === "text" && (
               <DynamicTextarea
                 value={block.content}
-                onChange={(e) => updateContentBlock(index, 'content', e.target.value)}
+                onChange={(e) =>
+                  updateContentBlock(index, "content", e.target.value)
+                }
                 placeholder="Enter your text content here..."
                 maxRows={200}
               />
             )}
-{block.type === 'image' && (
-  <>
-    <select
-      value={block.sourceType || 'url'}
-      onChange={(e) => {
-        updateContentBlock(index, 'sourceType', e.target.value);
-        // Reset fields when switching source type
-        if (block.url && block.url.startsWith('blob:')) {
-          URL.revokeObjectURL(block.url);
-        }
-        updateContentBlock(index, 'url', '');
-        updateContentBlock(index, 'uploadedFile', null);
-        updateContentBlock(index, 'error', '');
-      }}
-      className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2"
-    >
-      <option value="url">Image URL</option>
-      <option value="upload">Upload Image File</option>
-    </select>
+            {block.type === "image" && (
+              <>
+                <select
+                  value={block.sourceType || "url"}
+                  onChange={(e) => {
+                    updateContentBlock(index, "sourceType", e.target.value);
+                    // Reset fields when switching source type
+                    if (block.url && block.url.startsWith("blob:")) {
+                      URL.revokeObjectURL(block.url);
+                    }
+                    updateContentBlock(index, "url", "");
+                    updateContentBlock(index, "uploadedFile", null);
+                    updateContentBlock(index, "error", "");
+                  }}
+                  className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2"
+                >
+                  <option value="url">Image URL</option>
+                  <option value="upload">Upload Image File</option>
+                </select>
 
-    {block.sourceType === 'url' && (
-      <>
-        <input
-          type="url"
-          className={`shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2 ${validationErrors[`contentBlockUrl-${index}`] ? 'border-red-500' : ''}`}
-          value={block.url}
-          onChange={(e) => {
-            updateContentBlock(index, 'url', e.target.value);
-            setValidationErrors((prev) => ({ ...prev, [`contentBlockUrl-${index}`]: '' }));
-            updateContentBlock(index, 'error', '');
-          }}
-          placeholder="Image URL (e.g., /images/my-image.png)"
-        />
-        {validationErrors[`contentBlockUrl-${index}`] && (
-          <p className="text-red-500 text-xs italic mt-1">{validationErrors[`contentBlockUrl-${index}`]}</p>
-        )}
-      </>
-    )}
+                {block.sourceType === "url" && (
+                  <>
+                    <input
+                      type="url"
+                      className={`shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2 ${
+                        validationErrors[`contentBlockUrl-${index}`]
+                          ? "border-red-500"
+                          : ""
+                      }`}
+                      value={block.url}
+                      onChange={(e) => {
+                        updateContentBlock(index, "url", e.target.value);
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          [`contentBlockUrl-${index}`]: "",
+                        }));
+                        updateContentBlock(index, "error", "");
+                      }}
+                      placeholder="Image URL (e.g., /images/my-image.png)"
+                    />
+                    {validationErrors[`contentBlockUrl-${index}`] && (
+                      <p className="text-red-500 text-xs italic mt-1">
+                        {validationErrors[`contentBlockUrl-${index}`]}
+                      </p>
+                    )}
+                  </>
+                )}
 
-    {block.sourceType === 'upload' && (
-      <div
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          const file = e.dataTransfer.files[0];
-          const maxSizeMB = 10; // Limit to 10MB
-          const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                {block.sourceType === "upload" && (
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files[0];
+                      const maxSizeMB = 10; // Limit to 10MB
+                      const allowedFormats = [
+                        "image/jpeg",
+                        "image/png",
+                        "image/gif",
+                        "image/webp",
+                      ];
 
-          if (file) {
-            if (!allowedFormats.includes(file.type)) {
-              showNotification('Please upload a supported image format (JPEG, PNG, GIF, WebP).', 'error');
-              return;
-            }
-            if (file.size > maxSizeMB * 1024 * 1024) {
-              showNotification(`File size exceeds ${maxSizeMB}MB limit.`, 'error');
-              return;
-            }
-            if (block.url && block.url.startsWith('blob:')) {
-              URL.revokeObjectURL(block.url);
-            }
-            const newUrl = URL.createObjectURL(file);
-            updateContentBlock(index, 'uploadedFile', file);
-            updateContentBlock(index, 'url', newUrl);
-            updateContentBlock(index, 'error', '');
-            setValidationErrors((prev) => ({ ...prev, [`contentBlockUrl-${index}`]: '' }));
-          } else {
-            showNotification('Please upload a valid image file.', 'error');
-          }
-        }}
-        className="p-4 border-dashed border-2 rounded text-center mb-2 bg-gray-50 dark:bg-gray-600 dark:border-gray-500"
-      >
-        <p className="text-gray-700 dark:text-gray-300">Drag & drop image file here or click to upload (JPEG, PNG, GIF, WebP, max 10MB)</p>
-        <input
-          type="file"
-          accept="image/jpeg,image/png,image/gif,image/webp"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            const maxSizeMB = 10; // Limit to 10MB
-            const allowedFormats = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
+                      if (file) {
+                        if (!allowedFormats.includes(file.type)) {
+                          showNotification(
+                            "Please upload a supported image format (JPEG, PNG, GIF, WebP).",
+                            "error"
+                          );
+                          return;
+                        }
+                        if (file.size > maxSizeMB * 1024 * 1024) {
+                          showNotification(
+                            `File size exceeds ${maxSizeMB}MB limit.`,
+                            "error"
+                          );
+                          return;
+                        }
+                        if (block.url && block.url.startsWith("blob:")) {
+                          URL.revokeObjectURL(block.url);
+                        }
+                        const newUrl = URL.createObjectURL(file);
+                        updateContentBlock(index, "uploadedFile", file);
+                        updateContentBlock(index, "url", newUrl);
+                        updateContentBlock(index, "error", "");
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          [`contentBlockUrl-${index}`]: "",
+                        }));
+                      } else {
+                        showNotification(
+                          "Please upload a valid image file.",
+                          "error"
+                        );
+                      }
+                    }}
+                    className="p-4 border-dashed border-2 rounded text-center mb-2 bg-gray-50 dark:bg-gray-600 dark:border-gray-500"
+                  >
+                    <p className="text-gray-700 dark:text-gray-300">
+                      Drag & drop image file here or click to upload (JPEG, PNG,
+                      GIF, WebP, max 10MB)
+                    </p>
+                    <input
+                      type="file"
+                      accept="image/jpeg,image/png,image/gif,image/webp"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        const maxSizeMB = 10; // Limit to 10MB
+                        const allowedFormats = [
+                          "image/jpeg",
+                          "image/png",
+                          "image/gif",
+                          "image/webp",
+                        ];
 
-            if (file) {
-              if (!allowedFormats.includes(file.type)) {
-                showNotification('Please upload a supported image format (JPEG, PNG, GIF, WebP).', 'error');
-                return;
-              }
-              if (file.size > maxSizeMB * 1024 * 1024) {
-                showNotification(`File size exceeds ${maxSizeMB}MB limit.`, 'error');
-                return;
-              }
-              if (block.url && block.url.startsWith('blob:')) {
-                URL.revokeObjectURL(block.url);
-              }
-              const newUrl = URL.createObjectURL(file);
-              updateContentBlock(index, 'uploadedFile', file);
-              updateContentBlock(index, 'url', newUrl);
-              updateContentBlock(index, 'error', '');
-              setValidationErrors((prev) => ({ ...prev, [`contentBlockUrl-${index}`]: '' }));
-            } else {
-              showNotification('Please upload a valid image file.', 'error');
-            }
-          }}
-          className="block mt-2 mx-auto text-gray-700 dark:text-gray-200"
-        />
-      </div>
-    )}
+                        if (file) {
+                          if (!allowedFormats.includes(file.type)) {
+                            showNotification(
+                              "Please upload a supported image format (JPEG, PNG, GIF, WebP).",
+                              "error"
+                            );
+                            return;
+                          }
+                          if (file.size > maxSizeMB * 1024 * 1024) {
+                            showNotification(
+                              `File size exceeds ${maxSizeMB}MB limit.`,
+                              "error"
+                            );
+                            return;
+                          }
+                          if (block.url && block.url.startsWith("blob:")) {
+                            URL.revokeObjectURL(block.url);
+                          }
+                          const newUrl = URL.createObjectURL(file);
+                          updateContentBlock(index, "uploadedFile", file);
+                          updateContentBlock(index, "url", newUrl);
+                          updateContentBlock(index, "error", "");
+                          setValidationErrors((prev) => ({
+                            ...prev,
+                            [`contentBlockUrl-${index}`]: "",
+                          }));
+                        } else {
+                          showNotification(
+                            "Please upload a valid image file.",
+                            "error"
+                          );
+                        }
+                      }}
+                      className="block mt-2 mx-auto text-gray-700 dark:text-gray-200"
+                    />
+                  </div>
+                )}
 
-    {block.url && isValidUrl(block.url) && (
-      <div className="mt-2 text-center">
-        <img
-          src={block.url}
-          alt={block.alt || 'Image preview'}
-          className="max-w-full h-auto rounded-lg shadow-md mx-auto"
-          onError={(e) => {
-            updateContentBlock(index, 'error', 'Error loading image.');
-            e.target.src = 'https://placehold.co/300x200/FF0000/FFFFFF?text=Image+Error';
-          }}
-        />
-        {block.error && <p className="text-red-500 text-xs italic mt-1">{block.error}</p>}
-        <p className="text-gray-500 text-sm mt-1 dark:text-gray-400">Image Preview</p>
-      </div>
-    )}
+                {block.url && isValidUrl(block.url) && (
+                  <div className="mt-2 text-center">
+                    <img
+                      src={block.url}
+                      alt={block.alt || "Image preview"}
+                      className="max-w-full h-auto rounded-lg shadow-md mx-auto"
+                      onError={(e) => {
+                        updateContentBlock(
+                          index,
+                          "error",
+                          "Error loading image."
+                        );
+                        e.target.src =
+                          "https://placehold.co/300x200/FF0000/FFFFFF?text=Image+Error";
+                      }}
+                    />
+                    {block.error && (
+                      <p className="text-red-500 text-xs italic mt-1">
+                        {block.error}
+                      </p>
+                    )}
+                    <p className="text-gray-500 text-sm mt-1 dark:text-gray-400">
+                      Image Preview
+                    </p>
+                  </div>
+                )}
 
-    <input
-      type="text"
-      className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2 mt-2"
-      value={block.alt}
-      onChange={(e) => updateContentBlock(index, 'alt', e.target.value)}
-      placeholder="Alt text for image"
-    />
-    <input
-      type="text"
-      className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500"
-      value={block.caption}
-      onChange={(e) => updateContentBlock(index, 'caption', e.target.value)}
-      placeholder="Image caption (optional)"
-    />
-  </>
-)}
-{block.type === 'video' && (
-  <>
-    <select
-      value={block.sourceType || 'youtube'}
-      onChange={(e) => updateContentBlock(index, 'sourceType', e.target.value)}
-      className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2"
-    >
-      <option value="youtube">YouTube URL</option>
-      <option value="mp4">MP4 Link</option>
-      <option value="upload">Upload Video File</option>
-    </select>
+                <input
+                  type="text"
+                  className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2 mt-2"
+                  value={block.alt}
+                  onChange={(e) =>
+                    updateContentBlock(index, "alt", e.target.value)
+                  }
+                  placeholder="Alt text for image"
+                />
+                <input
+                  type="text"
+                  className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500"
+                  value={block.caption}
+                  onChange={(e) =>
+                    updateContentBlock(index, "caption", e.target.value)
+                  }
+                  placeholder="Image caption (optional)"
+                />
+              </>
+            )}
+            {block.type === "video" && (
+              <>
+                <select
+                  value={block.sourceType || "youtube"}
+                  onChange={(e) =>
+                    updateContentBlock(index, "sourceType", e.target.value)
+                  }
+                  className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2"
+                >
+                  <option value="youtube">YouTube URL</option>
+                  <option value="mp4">MP4 Link</option>
+                  <option value="upload">Upload Video File</option>
+                </select>
 
-    {(block.sourceType === 'youtube' || block.sourceType === 'mp4') && (
-      <>
-        <input
-          type="url"
-          className={`shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2 ${validationErrors[`contentBlockUrl-${index}`] ? 'border-red-500' : ''}`}
-          value={block.url || ''}
-          onChange={(e) => {
-            updateContentBlock(index, 'url', e.target.value);
-            setValidationErrors((prev) => ({ ...prev, [`contentBlockUrl-${index}`]: '' }));
-          }}
-          placeholder={block.sourceType === 'youtube' ? 'https://www.youtube.com/watch?v=...' : 'https://example.com/video.mp4'}
-        />
-        {validationErrors[`contentBlockUrl-${index}`] && (
-          <p className="text-red-500 text-xs italic mt-1">{validationErrors[`contentBlockUrl-${index}`]}</p>
-        )}
-      </>
-    )}
+                {(block.sourceType === "youtube" ||
+                  block.sourceType === "mp4") && (
+                  <>
+                    <input
+                      type="url"
+                      className={`shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2 ${
+                        validationErrors[`contentBlockUrl-${index}`]
+                          ? "border-red-500"
+                          : ""
+                      }`}
+                      value={block.url || ""}
+                      onChange={(e) => {
+                        updateContentBlock(index, "url", e.target.value);
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          [`contentBlockUrl-${index}`]: "",
+                        }));
+                      }}
+                      placeholder={
+                        block.sourceType === "youtube"
+                          ? "https://www.youtube.com/watch?v=..."
+                          : "https://example.com/video.mp4"
+                      }
+                    />
+                    {validationErrors[`contentBlockUrl-${index}`] && (
+                      <p className="text-red-500 text-xs italic mt-1">
+                        {validationErrors[`contentBlockUrl-${index}`]}
+                      </p>
+                    )}
+                  </>
+                )}
 
-    {block.sourceType === 'upload' && (
-      <div
-        onDragOver={(e) => e.preventDefault()}
-        onDrop={(e) => {
-          e.preventDefault();
-          const file = e.dataTransfer.files[0];
-          if (file && file.type.startsWith('video/')) {
-            updateContentBlock(index, 'uploadedFile', file);
-            updateContentBlock(index, 'url', URL.createObjectURL(file));
-            setValidationErrors((prev) => ({ ...prev, [`contentBlockUrl-${index}`]: '' }));
-          } else {
-            showNotification('Please upload a valid video file.', 'error');
-          }
-        }}
-        className="p-4 border-dashed border-2 rounded text-center mb-2 bg-gray-50 dark:bg-gray-600 dark:border-gray-500"
-      >
-        <p className="text-gray-700 dark:text-gray-300">Drag & drop video file here or click to upload</p>
-        <input
-          type="file"
-          accept="video/*"
-          onChange={(e) => {
-            const file = e.target.files[0];
-            if (file && file.type.startsWith('video/')) {
-              updateContentBlock(index, 'uploadedFile', file);
-              updateContentBlock(index, 'url', URL.createObjectURL(file));
-              setValidationErrors((prev) => ({ ...prev, [`contentBlockUrl-${index}`]: '' }));
-            } else {
-              showNotification('Please upload a valid video file.', 'error');
-            }
-          }}
-          className="block mt-2 mx-auto text-gray-700 dark:text-gray-200"
-        />
-      </div>
-    )}
+                {block.sourceType === "upload" && (
+                  <div
+                    onDragOver={(e) => e.preventDefault()}
+                    onDrop={(e) => {
+                      e.preventDefault();
+                      const file = e.dataTransfer.files[0];
+                      if (file && file.type.startsWith("video/")) {
+                        updateContentBlock(index, "uploadedFile", file);
+                        updateContentBlock(
+                          index,
+                          "url",
+                          URL.createObjectURL(file)
+                        );
+                        setValidationErrors((prev) => ({
+                          ...prev,
+                          [`contentBlockUrl-${index}`]: "",
+                        }));
+                      } else {
+                        showNotification(
+                          "Please upload a valid video file.",
+                          "error"
+                        );
+                      }
+                    }}
+                    className="p-4 border-dashed border-2 rounded text-center mb-2 bg-gray-50 dark:bg-gray-600 dark:border-gray-500"
+                  >
+                    <p className="text-gray-700 dark:text-gray-300">
+                      Drag & drop video file here or click to upload
+                    </p>
+                    <input
+                      type="file"
+                      accept="video/*"
+                      onChange={(e) => {
+                        const file = e.target.files[0];
+                        if (file && file.type.startsWith("video/")) {
+                          updateContentBlock(index, "uploadedFile", file);
+                          updateContentBlock(
+                            index,
+                            "url",
+                            URL.createObjectURL(file)
+                          );
+                          setValidationErrors((prev) => ({
+                            ...prev,
+                            [`contentBlockUrl-${index}`]: "",
+                          }));
+                        } else {
+                          showNotification(
+                            "Please upload a valid video file.",
+                            "error"
+                          );
+                        }
+                      }}
+                      className="block mt-2 mx-auto text-gray-700 dark:text-gray-200"
+                    />
+                  </div>
+                )}
 
-    {block.url && isValidUrl(block.url) && (
-      <div className="mt-2 aspect-w-16 aspect-h-9">
-        {block.sourceType === 'youtube' ? (
-          (() => {
-            const videoId = getYouTubeVideoId(block.url);
-            return videoId ? (
-              <iframe
-                className="w-full h-auto rounded-lg shadow-md mx-auto"
-                src={`https://www.youtube.com/embed/${videoId}`}
-                frameBorder="0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-                title={block.caption || 'YouTube Video Preview'}
-              ></iframe>
-            ) : (
-              <p className="text-red-500 text-xs italic mt-1">Invalid YouTube URL. Please provide a valid YouTube link.</p>
-            );
-          })()
-        ) : (
-          <video
-            controls
-            src={block.url}
-            className="w-full h-auto rounded-lg shadow-md mx-auto"
-            onError={(e) => (e.target.nextSibling.textContent = 'Error loading video.')}
-          ></video>
-        )}
-        <p className="text-gray-500 text-sm mt-1 dark:text-gray-400">
-          {block.sourceType === 'youtube' ? 'YouTube' : 'Video'} Preview
-        </p>
-      </div>
-    )}
+                {block.url && isValidUrl(block.url) && (
+                  <div className="mt-2 aspect-w-16 aspect-h-9">
+                    {block.sourceType === "youtube" ? (
+                      (() => {
+                        const videoId = getYouTubeVideoId(block.url);
+                        return videoId ? (
+                          <iframe
+                            className="w-full h-auto rounded-lg shadow-md mx-auto"
+                            src={`https://www.youtube.com/embed/${videoId}`}
+                            frameBorder="0"
+                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                            allowFullScreen
+                            title={block.caption || "YouTube Video Preview"}
+                          ></iframe>
+                        ) : (
+                          <p className="text-red-500 text-xs italic mt-1">
+                            Invalid YouTube URL. Please provide a valid YouTube
+                            link.
+                          </p>
+                        );
+                      })()
+                    ) : (
+                      <video
+                        controls
+                        src={block.url}
+                        className="w-full h-auto rounded-lg shadow-md mx-auto"
+                        onError={(e) =>
+                          (e.target.nextSibling.textContent =
+                            "Error loading video.")
+                        }
+                      ></video>
+                    )}
+                    <p className="text-gray-500 text-sm mt-1 dark:text-gray-400">
+                      {block.sourceType === "youtube" ? "YouTube" : "Video"}{" "}
+                      Preview
+                    </p>
+                  </div>
+                )}
 
-    <input
-      type="text"
-      className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mt-2"
-      value={block.caption}
-      onChange={(e) => updateContentBlock(index, 'caption', e.target.value)}
-      placeholder="Video caption (optional)"
-    />
-  </>
-)}
-            {block.type === 'code' && (
+                <input
+                  type="text"
+                  className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mt-2"
+                  value={block.caption}
+                  onChange={(e) =>
+                    updateContentBlock(index, "caption", e.target.value)
+                  }
+                  placeholder="Video caption (optional)"
+                />
+              </>
+            )}
+            {block.type === "code" && (
               <>
                 <input
                   type="text"
                   className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500 mb-2"
                   value={block.language}
-                  onChange={(e) => updateContentBlock(index, 'language', e.target.value)}
+                  onChange={(e) =>
+                    updateContentBlock(index, "language", e.target.value)
+                  }
                   placeholder="Code Language (e.g., javascript, python)"
                 />
                 <DynamicTextarea
                   value={block.code}
-                  onChange={(e) => updateContentBlock(index, 'code', e.target.value)} // Direct update, not through block
+                  onChange={(e) =>
+                    updateContentBlock(index, "code", e.target.value)
+                  } // Direct update, not through block
                   placeholder="Paste your code snippet here..."
                   maxRows={200}
                 />
@@ -2361,7 +3110,9 @@ const downloadZip = async () => {
                   type="text"
                   className="shadow-sm appearance-none border rounded-lg w-full py-2 px-3 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-white dark:bg-gray-600 dark:border-gray-500"
                   value={block.description}
-                  onChange={(e) => updateContentBlock(index, 'description', e.target.value)}
+                  onChange={(e) =>
+                    updateContentBlock(index, "description", e.target.value)
+                  }
                   placeholder="Description for this code snippet"
                 />
                 <button
@@ -2369,7 +3120,9 @@ const downloadZip = async () => {
                   disabled={codeGeminiLoadingIndex === index || isLoadingGemini}
                   className="mt-3 w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {codeGeminiLoadingIndex === index ? 'Generating Code...' : 'Generate Code with ✨Gemini'}
+                  {codeGeminiLoadingIndex === index
+                    ? "Generating Code..."
+                    : "Generate Code with ✨Gemini"}
                 </button>
               </>
             )}
@@ -2378,7 +3131,10 @@ const downloadZip = async () => {
 
         {/* Technologies Tags */}
         <div className="mb-6">
-          <label htmlFor="technologiesTags" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+          <label
+            htmlFor="technologiesTags"
+            className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+          >
             Technologies Used (Tags, Comma Separated):
           </label>
           <input
@@ -2392,39 +3148,68 @@ const downloadZip = async () => {
         </div>
 
         {/* Author and SEO/Social Media Details */}
-        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">Author & SEO/Social Media Details</h2>
+        <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4 mt-8">
+          Author & SEO/Social Media Details
+        </h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           <div>
-            <label htmlFor="authorName" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="authorName"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Author Name: <span className="text-red-500">*</span>
             </label>
             <input
               type="text"
               id="authorName"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.authorName ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.authorName ? "border-red-500" : ""
+              }`}
               value={authorName}
-              onChange={(e) => { setAuthorName(e.target.value); setValidationErrors(prev => ({ ...prev, authorName: '' })); }}
+              onChange={(e) => {
+                setAuthorName(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, authorName: "" }));
+              }}
               placeholder="Your Name Here"
               required
             />
-            {validationErrors.authorName && <p className="text-red-500 text-xs italic mt-1">{validationErrors.authorName}</p>}
+            {validationErrors.authorName && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.authorName}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="linkedinUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="linkedinUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               LinkedIn Profile URL:
             </label>
             <input
               type="url"
               id="linkedinUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.linkedinUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.linkedinUrl ? "border-red-500" : ""
+              }`}
               value={linkedinUrl}
-              onChange={(e) => { setLinkedinUrl(e.target.value); setValidationErrors(prev => ({ ...prev, linkedinUrl: '' })); }}
+              onChange={(e) => {
+                setLinkedinUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, linkedinUrl: "" }));
+              }}
               placeholder="https://www.linkedin.com/in/your-linkedin-profile"
             />
-            {validationErrors.linkedinUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.linkedinUrl}</p>}
+            {validationErrors.linkedinUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.linkedinUrl}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="jobTitle" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="jobTitle"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Job Title:
             </label>
             <input
@@ -2437,7 +3222,10 @@ const downloadZip = async () => {
             />
           </div>
           <div>
-            <label htmlFor="alumniOf" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="alumniOf"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Alumni Of:
             </label>
             <input
@@ -2453,74 +3241,137 @@ const downloadZip = async () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
           <div>
-            <label htmlFor="projectUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="projectUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Project Canonical URL (for OG/Twitter):
             </label>
             <input
               type="url"
               id="projectUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.projectUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.projectUrl ? "border-red-500" : ""
+              }`}
               value={projectUrl}
-              onChange={(e) => { setProjectUrl(e.target.value); setValidationErrors(prev => ({ ...prev, projectUrl: '' })); }}
+              onChange={(e) => {
+                setProjectUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, projectUrl: "" }));
+              }}
               placeholder="https://your-username.github.io/your-project-name/index.html"
             />
-            {validationErrors.projectUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.projectUrl}</p>}
+            {validationErrors.projectUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.projectUrl}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="ogImageUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="ogImageUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               OG Image URL (for social media previews):
             </label>
             <input
               type="url"
               id="ogImageUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.ogImageUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.ogImageUrl ? "border-red-500" : ""
+              }`}
               value={ogImageUrl}
-              onChange={(e) => { setOgImageUrl(e.target.value); setValidationErrors(prev => ({ ...prev, ogImageUrl: '' })); }}
+              onChange={(e) => {
+                setOgImageUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, ogImageUrl: "" }));
+              }}
               placeholder="https://placehold.co/1200x630/E0E7FF/4338CA?text=Project+OG+Image"
             />
-            {validationErrors.ogImageUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.ogImageUrl}</p>}
+            {validationErrors.ogImageUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.ogImageUrl}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="twitterImageUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="twitterImageUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Twitter Image URL:
             </label>
             <input
               type="url"
               id="twitterImageUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.twitterImageUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.twitterImageUrl ? "border-red-500" : ""
+              }`}
               value={twitterImageUrl}
-              onChange={(e) => { setTwitterImageUrl(e.target.value); setValidationErrors(prev => ({ ...prev, twitterImageUrl: '' })); }}
+              onChange={(e) => {
+                setTwitterImageUrl(e.target.value);
+                setValidationErrors((prev) => ({
+                  ...prev,
+                  twitterImageUrl: "",
+                }));
+              }}
               placeholder="https://placehold.co/1200x675/E0E7FF/4338CA?text=Project+Twitter+Image"
             />
-            {validationErrors.twitterImageUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.twitterImageUrl}</p>}
+            {validationErrors.twitterImageUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.twitterImageUrl}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="faviconUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="faviconUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Favicon URL:
             </label>
             <input
               type="url"
               id="faviconUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.faviconUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.faviconUrl ? "border-red-500" : ""
+              }`}
               value={faviconUrl}
-              onChange={(e) => { setFaviconUrl(e.target.value); setValidationErrors(prev => ({ ...prev, faviconUrl: '' })); }}
-                            placeholder="https://placehold.co/32x32/E0E7FF/4338CA?text=Fav"
+              onChange={(e) => {
+                setFaviconUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, faviconUrl: "" }));
+              }}
+              placeholder="https://placehold.co/32x32/E0E7FF/4338CA?text=Fav"
             />
-            {validationErrors.faviconUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.faviconUrl}</p>}
+            {validationErrors.faviconUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.faviconUrl}
+              </p>
+            )}
           </div>
           <div>
-            <label htmlFor="logoUrl" className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2">
+            <label
+              htmlFor="logoUrl"
+              className="block text-gray-700 dark:text-gray-300 text-sm font-bold mb-2"
+            >
               Logo URL:
             </label>
             <input
               type="url"
               id="logoUrl"
-              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${validationErrors.logoUrl ? 'border-red-500' : ''}`}
+              className={`shadow-sm appearance-none border rounded-lg w-full py-3 px-4 text-gray-700 dark:text-gray-200 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200 bg-gray-50 dark:bg-gray-700 dark:border-gray-600 ${
+                validationErrors.logoUrl ? "border-red-500" : ""
+              }`}
               value={logoUrl}
-              onChange={(e) => { setLogoUrl(e.target.value); setValidationErrors(prev => ({ ...prev, logoUrl: '' })); }}
+              onChange={(e) => {
+                setLogoUrl(e.target.value);
+                setValidationErrors((prev) => ({ ...prev, logoUrl: "" }));
+              }}
               placeholder="https://placehold.co/40x40/E0E7FF/4338CA?text=Logo"
             />
-            {validationErrors.logoUrl && <p className="text-red-500 text-xs italic mt-1">{validationErrors.logoUrl}</p>}
+            {validationErrors.logoUrl && (
+              <p className="text-red-500 text-xs italic mt-1">
+                {validationErrors.logoUrl}
+              </p>
+            )}
           </div>
         </div>
 
@@ -2530,16 +3381,18 @@ const downloadZip = async () => {
         >
           Generate HTML
         </button>
-<button
-  onClick={downloadZip}
-  className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 mt-4"
->
-  Download as ZIP
-</button>
+        <button
+          onClick={downloadZip}
+          className="w-full bg-purple-500 hover:bg-purple-600 text-white font-bold py-3 px-4 rounded-lg shadow-lg transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-opacity-50 mt-4"
+        >
+          Download as ZIP
+        </button>
 
         {generatedHtml && (
           <div className="mt-10 bg-gray-50 dark:bg-gray-900 p-6 rounded-lg shadow-inner border border-gray-200 dark:border-gray-700">
-            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">Generated HTML:</h2>
+            <h2 className="text-2xl font-semibold text-gray-800 dark:text-white mb-4">
+              Generated HTML:
+            </h2>
             <textarea
               ref={htmlOutputRef}
               readOnly
@@ -2558,8 +3411,10 @@ const downloadZip = async () => {
       </div>
       {/* Live Preview Panel */}
       {showPreviewPanel && (
-          <div className={`relative w-1/2 min-w-0 flex-shrink-0 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out flex-1 overflow-y-auto ml-4`}>
-            {/* ... preview panel content ... */}
+        <div
+          className={`relative w-1/2 min-w-0 flex-shrink-0 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out flex-1 overflow-y-auto ml-4`}
+        >
+          {/* ... preview panel content ... */}
           {isUpdatingPreview && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 z-10 rounded-xl">
               <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold animate-pulse">
@@ -2575,8 +3430,8 @@ const downloadZip = async () => {
             // Set min-height here as an inline style for the iframe itself, or rely on flex-1 to fill the parent.
             // style={{ minHeight: '80vh' }} is not needed if parent handles flex correctly
           ></iframe>
-          </div>
-        )}
+        </div>
+      )}
       {notification && (
         <Notification
           message={notification.message}
@@ -2586,7 +3441,6 @@ const downloadZip = async () => {
       )}
     </div>
   );
-
 };
 
 export default App;
