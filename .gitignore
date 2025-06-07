@@ -24,3 +24,6 @@ yarn-error.log*
 
 #
 src/App_1.js
+
+#
+.vscode

@@ -1118,7 +1118,6 @@ useEffect(() => {
   };
 
    const customCssVars = `
-    <style>
       :root {
         --primary-brand: ${primaryColor};
         --secondary-brand-color: ${secondaryColor};
@@ -1630,6 +1629,12 @@ const downloadZip = async () => {
     return () => clearTimeout(timer); // Cleanup function to clear timeout if generatedHtml changes or panel is hidden
   }, [generatedHtml, showPreviewPanel]);
 
+  // Inside the App component, after other useState and useRef declarations
+  useEffect(() => {
+    if (showPreviewPanel) {
+      generateHtml();
+    }
+  }, [showPreviewPanel, generateHtml]); // Added handleGenerateHtml to dependency array for clarity
   return (
     <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-row p-4 text-gray-900 dark:text-gray-100 dark">
       {/* Main Content (Input Form) */}
