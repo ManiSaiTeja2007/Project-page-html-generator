@@ -42,7 +42,29 @@
         }
         .border-border-color {
             border-color: #4a5568; /* Border color */
-        }</style>
+        }
+        /* Scrollbar Styles for Webkit (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+    width: 12px; /* Adjust as needed */
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-body); /* Use the body background color for the track */
+    border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+    background-color: var(--primary-brand); /* Use your primary brand color for the thumb */
+    border-radius: 10px;
+    border: 3px solid var(--bg-body); /* Add a border with the body background color */
+}
+
+/* Scrollbar Styles for Firefox */
+html {
+    scrollbar-width: thin; /* "auto" or "thin" */
+    scrollbar-color: var(--primary-brand) var(--bg-body); /* thumb color track color */
+}
+        </style>
     <footer class="bg-card text-center py-8 border-t border-border-color">
     <p class="text-default-text text-sm mb-2">&copy; <span id="current-year"></span> Mani Sai Teja Bejjala. All rights reserved.</p>
     </footer>

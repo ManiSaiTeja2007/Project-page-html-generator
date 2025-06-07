@@ -1635,10 +1635,12 @@ const downloadZip = async () => {
       generateHtml();
     }
   }, [showPreviewPanel, generateHtml]); // Added handleGenerateHtml to dependency array for clarity
+  
+  
   return (
-    <div className="min-h-screen bg-gray-100 dark:bg-gray-900 flex flex-row p-4 text-gray-900 dark:text-gray-100 dark">
+    <div className="bg-gray-100 flex h-screen w-full p-4 text-gray-900 dark:text-gray-100 dark:bg-gray-900 dark ${showPreviewPanel ? 'overflow-hidden' : 'overflow-auto'}">
       {/* Main Content (Input Form) */}
-      <div className={`${showPreviewPanel ? 'w-1/2 max-w-2xl' : 'w-full max-w'} bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${showPreviewPanel ? 'mr-4' : ''}`}>
+      <div className={`${showPreviewPanel ? 'overflow-y-scroll h-full' : 'w-full max-w'} bg-gray dark:bg-gray-800 p-8 rounded-xl transition-all duration-300 ease-in-out flex-1 overflow-y-auto ${showPreviewPanel ? 'mr-4' : ''}`}>
         <h1 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-8 text-center">
           Project Page HTML Generator
         </h1>
@@ -1679,7 +1681,6 @@ const downloadZip = async () => {
             </svg>
           </button>
         </div>
-
 
         {/* Main Project Details */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
@@ -1727,7 +1728,7 @@ const downloadZip = async () => {
           />
           {validationErrors.projectDescription && <p className="text-red-500 text-xs italic mt-1">{validationErrors.projectDescription}</p>}
           {/* Gemini API Key Input */}
-        <div className="bg-blue-50 border border-blue-200 text-blue-800 p-4 rounded-lg flex flex-col space-y-4">
+        <div className="bg-dark:text-gray-300 border dark:border-black-600 p-4 rounded-lg flex flex-col space-y-4">
           <p className="font-semibold text-lg">
             🔑 Gemini API Key (Your Key)(Optional)
           </p>
@@ -1738,7 +1739,7 @@ const downloadZip = async () => {
           </p>
           <input
             type="password" // Use type="password" for better security in UI
-            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white text-gray-900"
+            className="w-full p-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black-500 text-white dark:bg-gray-700 dark:border-gray-600"
             placeholder="Enter your Gemini API key here"
             value={userApiKey}
             onChange={(e) => setUserApiKey(e.target.value)}
@@ -2557,8 +2558,8 @@ const downloadZip = async () => {
       </div>
       {/* Live Preview Panel */}
       {showPreviewPanel && (
-        <div className={`relative w-1/2 min-w-0 flex-shrink-0 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out flex-1 overflow-y-auto ml-4`}>
-          <h2 className="text-2xl font-extrabold text-gray-900 dark:text-white mb-4 text-center">Live Preview</h2>
+          <div className={`relative w-1/2 min-w-0 flex-shrink-0 bg-white dark:bg-gray-800 p-4 rounded-xl shadow-2xl overflow-hidden transition-all duration-300 ease-in-out flex-1 overflow-y-auto ml-4`}>
+            {/* ... preview panel content ... */}
           {isUpdatingPreview && (
             <div className="absolute inset-0 flex items-center justify-center bg-gray-200 dark:bg-gray-900 bg-opacity-75 dark:bg-opacity-75 z-10 rounded-xl">
               <p className="text-gray-800 dark:text-gray-200 text-lg font-semibold animate-pulse">
@@ -2574,8 +2575,8 @@ const downloadZip = async () => {
             // Set min-height here as an inline style for the iframe itself, or rely on flex-1 to fill the parent.
             // style={{ minHeight: '80vh' }} is not needed if parent handles flex correctly
           ></iframe>
-        </div>
-      )}
+          </div>
+        )}
       {notification && (
         <Notification
           message={notification.message}
